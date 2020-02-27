@@ -9,12 +9,18 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class AuthTokenAO {
-
-    public AuthToken getToken(Connection connection, String userID) throws SQLException {
+    /**
+     *
+     * @param connection
+     * @param userID
+     * @return AuthToken
+     * @throws DataAccessException
+     */
+    public AuthToken getToken(Connection connection, String userID) throws DataAccessException {
         PreparedStatement stmt = null;
         ResultSet rs = null;
         AuthToken at = null;
-
+    try {
         try {
             String sql = "SELECT TokenID, authToken, Username FROM authToken WHERE Username = '"+ userID +"';";
             stmt = connection.prepareStatement(sql);
@@ -30,11 +36,21 @@ public class AuthTokenAO {
             if(stmt != null) {
                 stmt.close();
             }
-        }
+        } }
+    catch (SQLException e) {
+        e.printStackTrace();
+        throw new DataAccessException("Error retrieving authToken");
+    }
 
         return at;
     }
 
+    /**
+     *
+     * @param connection
+     * @param token
+     * @throws DataAccessException
+     */
     public void addToken(Connection connection, AuthToken token) throws DataAccessException {
         PreparedStatement stmt = null;
 
@@ -59,6 +75,12 @@ public class AuthTokenAO {
         }
     }
 
+    /**
+     *
+     * @param connection
+     * @param userName
+     * @throws DataAccessException
+     */
     public void deleteToken(Connection connection, String userName) throws DataAccessException {
         PreparedStatement stmt = null;
         try {

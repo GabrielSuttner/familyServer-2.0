@@ -23,6 +23,12 @@ public class AuthToken {
                 userName.equals(authToken.userName) &&
                 token.equals(authToken.token);
     }
+    public boolean equals(String s){
+        if(s == this.token){
+            return true;
+        }
+        return false;
+    }
 
     @Override
     public int hashCode() {
