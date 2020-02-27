@@ -34,6 +34,13 @@ public class User {
         this.userName = userName;
         this.password = password;
     }
+    public boolean checkPassword(String password) {
+        if(this.password.equals(password) ){
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     public String getEmail() {
         return email;
@@ -75,6 +82,27 @@ public class User {
         this.personID = personID;
     }
 
+    public String getUserName() {
+        return userName;
+    }
+
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+
+    public String getPassword() {
+        return password;
+    }
+
+    /**
+     *
+     * @param password
+     */
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
 
     @Override
@@ -91,39 +119,5 @@ public class User {
         return Objects.hash(userName, password);
     }
 
-
-
-
-    /**
-     *
-     * @return
-     */
-    public String getUserName() {
-        return userName;
-    }
-
-    /**
-     *
-     * @param userName
-     */
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public String getPassword() {
-        return password;
-    }
-
-    /**
-     *
-     * @param password
-     */
-    public void setPassword(String password) {
-        this.password = password;
-    }
 
 }

@@ -4,13 +4,15 @@ import Handlers.*;
 import com.sun.net.httpserver.HttpServer;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.net.http.HttpResponse;
 
 //https://docs.oracle.com/en/java/javase/11/docs/api/jdk.httpserver/com/sun/net/httpserver/HttpServer.html
 public class Server  {
     public static void main(String argv[]){
         try {
-            start(3001);
+            start(8080);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -22,7 +24,8 @@ public class Server  {
         HttpServer server = HttpServer.create(serverAddress, 10);
         registerHandlers(server);
         server.start();
-        System.out.println("FamilyMapServer listening on port " + port);
+        InetAddress inetAddress = InetAddress.getLocalHost();
+        System.out.println("FamilyMapServer listening on "+inetAddress.toString() +":" +port);
     }
 
     private static void registerHandlers(HttpServer server) {
@@ -36,6 +39,10 @@ public class Server  {
         server.createContext("/person", new PersonsRequestHandler());
         server.createContext("/event/", new EventRequestHandler());
         server.createContext("/event", new EventsRequestHandler());
+        server.createContext("/", new FileHandler());
+
     }
+
+    public static HttpResponse convertToReponse(HttpResponse k, <T> object)
 
 }
