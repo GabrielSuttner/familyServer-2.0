@@ -6,11 +6,11 @@ import java.util.Objects;
 
 public class User {
 
-    @SerializedName("Username")
+    @SerializedName("userName")
     private String userName;
-    @SerializedName("Password")
+    @SerializedName("password")
     private String password;
-    @SerializedName("Email")
+    @SerializedName("email")
     private String email;
     @SerializedName("First_Name")
     private String firstName;

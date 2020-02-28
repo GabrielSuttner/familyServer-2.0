@@ -42,7 +42,4 @@ public class Server  {
         server.createContext("/", new FileHandler());
 
     }
-
-    public static HttpResponse convertToReponse(HttpResponse k, <T> object)
-
 }

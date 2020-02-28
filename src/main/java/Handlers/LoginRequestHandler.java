@@ -1,21 +1,16 @@
 package Handlers;
 
-import DAO.AuthTokenAO;
-import DAO.PersonAO;
-import DAO.UserAO;
 import DataAccess.DataAccessException;
 import DataAccess.DataBase;
-import Model.AuthToken;
-import Model.Person;
 import Model.User;
-import com.sun.net.httpserver.Headers;
+import RequestResult.LoginRequest;
+import RequestResult.LoginResponse;
+import Service.LoginService;
+import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
+import java.io.*;
 import java.net.HttpURLConnection;
 
 public class LoginRequestHandler implements HttpHandler {
@@ -24,36 +19,34 @@ public class LoginRequestHandler implements HttpHandler {
         DataBase db = new DataBase();
         try {
             if(exchange.getRequestMethod().toUpperCase().equals("POST")) {
-                String username = (String) exchange.getAttribute("username");
-                String password = (String) exchange.getAttribute("password");
-                UserAO ua = new UserAO();
-                User user = ua.getUser(db.getUserConnection(), username);
-                db.closeUserConnection(true);
-                AuthTokenAO ao = null;
-                if(user.checkPassword(password)) {
-                     ao = new AuthTokenAO();
-                    AuthToken token = new AuthToken(username);
-                    ao.addToken(db.getAuthConnection(), token);
-                    db.closeAuthConnection(true);
+                User user = null;
+                Reader reader = null;
+                reader = new InputStreamReader(exchange.getRequestBody());
+
+                Gson gson = new Gson();
+                user = gson.fromJson(reader, User.class);
+                LoginRequest request = new LoginRequest(user.getUserName(), user.getPassword());
+                LoginService ls = new LoginService();
+                LoginResponse lp = ls.login(request);
 
 
+
+                OutputStream respBody = exchange.getResponseBody();
+                OutputStreamWriter osw = new OutputStreamWriter(respBody);
+                osw.write(gson.toJson(lp));
+                if(lp.isSuccess()) {
+                    exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
                 } else {
-                    //return a reject
+                    exchange.sendResponseHeaders(HttpURLConnection.HTTP_NOT_FOUND, 0);
                 }
-
+                osw.close();
+                exchange.close();
             } else {
                 exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_METHOD, 0);
             }
 
         } catch (IOException e){
             e.printStackTrace();
-        } catch (DataAccessException e) {
-            System.out.println("Error: Couldn't establish connection to user Database.");
-            try {
-                db.closeAllConnections(false);
-            } catch (DataAccessException ex) {
-                ex.printStackTrace();
-            }
         }
     }
 }

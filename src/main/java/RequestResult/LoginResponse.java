@@ -2,6 +2,18 @@ package RequestResult;
 
 public class LoginResponse {
     private String authToken;
+    private String userName;
+    private String personID;
+    boolean success;
+    private String message;
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
 
     public String getAuthToken() {
         return authToken;
@@ -35,7 +47,5 @@ public class LoginResponse {
         this.success = success;
     }
 
-    private String userName;
-    private String personID;
-    boolean success;
+
 }

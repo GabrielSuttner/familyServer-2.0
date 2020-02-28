@@ -11,8 +11,6 @@ public class AuthToken {
     private String tokenID;
     @SerializedName("Username")
     private String userName;
-    @SerializedName("Token")
-    private String token;
 
     @Override
     public boolean equals(Object o) {
@@ -20,11 +18,11 @@ public class AuthToken {
         if (o == null || getClass() != o.getClass()) return false;
         AuthToken authToken = (AuthToken) o;
         return tokenID.equals(authToken.tokenID) &&
-                userName.equals(authToken.userName) &&
-                token.equals(authToken.token);
+                userName.equals(authToken.userName);
     }
-    public boolean equals(String s){
-        if(s == this.token){
+
+    public boolean equals(String s) {
+        if (s == this.tokenID) {
             return true;
         }
         return false;
@@ -32,52 +30,43 @@ public class AuthToken {
 
     @Override
     public int hashCode() {
-        return Objects.hash(tokenID, userName, token);
+        return Objects.hash(tokenID, userName);
     }
 
 
-
     /**
-     *
      * @param userName
      */
     public AuthToken(String userName) {
         this.tokenID = UUID.randomUUID().toString();
-        this.token = randomString();
         this.userName = userName;
     }
 
     /**
-     *
      * @param tokenID
      * @param name
-     * @param token
      */
-    public AuthToken(String tokenID, String name, String token) {
+    public AuthToken(String tokenID, String name) {
         this.tokenID = tokenID;
         this.userName = name;
-        this.token = token;
     }
 
     /**
-     *
      * @return username
      */
     public String getUserName() {
-        return  this.userName;
+        return this.userName;
     }
 
     /**
-     *
      * @return token
      */
-    public String getToken() {
-        return this.token;
+
+    public String getTokenID() {
+        return this.tokenID;
     }
 
-    public String getTokenID() {return this.tokenID;}
     /**
-     *
      * @return a random string
      */
     private String randomString() {
@@ -90,17 +79,5 @@ public class AuthToken {
         }
         String saltStr = salt.toString();
         return saltStr;
-    }
-
-    /**
-     *
-     * @param s
-     * @return
-     */
-    public boolean validateToken(String s) {
-        if(this.token == s) {
-            return true;
-        }
-        return false;
     }
 }

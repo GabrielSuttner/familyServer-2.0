@@ -26,8 +26,7 @@ public class AuthTokenAO {
             stmt = connection.prepareStatement(sql);
 
             rs = stmt.executeQuery();
-            at = new AuthToken(rs.getString(1),
-                    rs.getString(3), rs.getString(2));
+            at = new AuthToken(rs.getString(1), rs.getString(2));
 
         } finally {
             if(rs != null) {
@@ -55,13 +54,12 @@ public class AuthTokenAO {
         PreparedStatement stmt = null;
 
         try {
-            String sql = "INSERT INTO (TokenID, AuthToken, Username)  VALUES(?, ?, ?);";
+            String sql = "INSERT INTO (TokenID, Username)  VALUES(?, ?, ?);";
 
             stmt = connection.prepareStatement(sql);
 
             stmt.setString(1, token.getTokenID());
-            stmt.setString(2, token.getToken());
-            stmt.setString(3, token.getUserName());
+            stmt.setString(2, token.getUserName());
         } catch (SQLException e){
             throw new DataAccessException("Error inserting New Token\n");
         } finally {
