@@ -5,6 +5,7 @@ public class RegisterResponse {
     private String userName;
     private String personID;
     private boolean success;
+    private String message;
 
     public String getAuthToken() {
         return authToken;
@@ -36,5 +37,13 @@ public class RegisterResponse {
 
     public void setSuccess(boolean success) {
         this.success = success;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public String getMessage() {
+        return this.message;
     }
 }

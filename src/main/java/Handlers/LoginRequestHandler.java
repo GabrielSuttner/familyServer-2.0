@@ -29,8 +29,6 @@ public class LoginRequestHandler implements HttpHandler {
                 LoginService ls = new LoginService();
                 LoginResponse lp = ls.login(request);
 
-
-
                 OutputStream respBody = exchange.getResponseBody();
                 OutputStreamWriter osw = new OutputStreamWriter(respBody);
                 osw.write(gson.toJson(lp));

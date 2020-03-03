@@ -1,5 +1,7 @@
 package RequestResult;
 
+import Model.Event;
+
 public class EventReponse {
     private String eventID;
     private String personID;
@@ -10,6 +12,7 @@ public class EventReponse {
     private String eventType;
     private int year;
     private boolean success;
+    private String message;
 
     public String getEventID() {
         return eventID;
@@ -82,5 +85,23 @@ public class EventReponse {
     public void setSuccess(boolean success) {
         this.success = success;
     }
+    public void setField(Event event) {
+        this.city = event.getCity();
+        this.country = event.getCountry();
+        this.eventID = event.getEventID();
+        this.eventType = event.getEventType();
+        this.latitude = event.getLatitude();
+        this.longitude = event.getLongitude();
+        this.personID  = event.getPersonID();
+        this.success = true;
+        this.year = event.getYear();
+    }
 
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
 }

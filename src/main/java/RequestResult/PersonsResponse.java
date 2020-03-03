@@ -7,6 +7,11 @@ import java.util.List;
 public class PersonsResponse {
     private List<Person> data;
     private boolean success;
+    private String message;
+
+    public PersonsResponse() {
+
+    }
 
     public List<Person> getData() {
         return data;
@@ -26,5 +31,13 @@ public class PersonsResponse {
 
     public PersonsResponse(List<Person> data) {
         this.data = data;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 }

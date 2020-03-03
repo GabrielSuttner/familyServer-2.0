@@ -1,5 +1,7 @@
 package RequestResult;
 
+import Model.Person;
+
 public class PersonResponse {
     private String associatedUsername;
     private String personID;
@@ -10,6 +12,16 @@ public class PersonResponse {
     private String motherID;
     private String spouseID;
     private boolean success;
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    private String message;
 
     public String getAssociatedUsername() {
         return associatedUsername;
@@ -81,5 +93,16 @@ public class PersonResponse {
 
     public void setSuccess(boolean success) {
         this.success = success;
+    }
+
+    public void setFields(Person p) {
+        this.personID = p.getPersonID();
+        this.associatedUsername = p.getUsername();
+        this.firstName = p.getFirstName();
+        this.fatherID = p.getFatherID();
+        this.motherID = p.getMotherID();
+        this.spouseID = p.getSpouseID();
+        this.gender = p.getGender();
+        this.success = true;
     }
 }

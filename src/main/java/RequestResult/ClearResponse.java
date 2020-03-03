@@ -8,7 +8,13 @@ public class ClearResponse {
         return message;
     }
 
+    public void setMessage(String message) {this.message = message;}
+
     public boolean isSuccess() {
         return success;
+    }
+
+    public void setSuccess(boolean b) {
+        success = b;
     }
 }

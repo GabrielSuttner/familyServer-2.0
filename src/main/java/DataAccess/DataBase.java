@@ -225,6 +225,21 @@ public class DataBase {
        clearPersonsTable();
        clearAuthTables();
        clearEventsTables();
+       clearUserTables();
+    }
+
+    private void clearUserTables() throws DataAccessException {
+        if(this.userConnection == null) {
+            openUserConnection();
+        }
+        try (Statement stmt = this.userConnection.createStatement()){
+            String sql = "DELETE FROM users;";
+            stmt.executeUpdate(sql);
+            closeUserConnection(true);
+        } catch (SQLException e) {
+            closeUserConnection(false);
+            throw new DataAccessException("SQL Error encountered while clearing Users tables");
+        }
     }
 
     /**
@@ -232,13 +247,15 @@ public class DataBase {
      * @throws DataAccessException
      */
     public void clearPersonsTable() throws DataAccessException {
-        if(this.userConnection == null) {
-            openUserConnection();
+        if(this.personConnection == null) {
+            openPersonConnection();
         }
         try (Statement stmt = this.personConnection.createStatement()){
             String sql = "DELETE FROM persons;";
             stmt.executeUpdate(sql);
+            closePersonConnection(true);
         } catch (SQLException e) {
+            closePersonConnection(false);
             throw new DataAccessException("SQL Error encountered while clearing persons tables");
         }
     }
@@ -248,10 +265,15 @@ public class DataBase {
      * @throws DataAccessException
      */
     public void clearEventsTables() throws DataAccessException {
+        if(this.eventConnection == null) {
+            openEventConnection();
+        }
         try (Statement stmt = eventConnection.createStatement()){
             String sql = "DELETE FROM events;";
             stmt.executeUpdate(sql);
+            closeEventConnection(true);
         } catch (SQLException e) {
+            closeEventConnection(false);
             throw new DataAccessException("SQL Error encountered while clearing events tables");
         }
     }
@@ -263,11 +285,16 @@ public class DataBase {
      * @throws DataAccessException
      */
     public void clearAuthTables() throws DataAccessException {
+        if(authConnection == null) {
+            openAuthConnection();
+        }
         try (Statement stmt = authConnection.createStatement()){
-            String sql = "DELETE FROM authToken;";
+            String sql = "DELETE FROM authTokens;";
             stmt.executeUpdate(sql);
+            closeAuthConnection(true);
         } catch (SQLException e) {
-            throw new DataAccessException("SQL Error encountered while clearing authToken tables");
+            closeAuthConnection(false);
+            throw new DataAccessException("SQL Error encountered while clearing authTokens tables");
         }
     }
 

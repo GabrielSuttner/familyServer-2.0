@@ -1,8 +1,13 @@
 package Server;
 
+import DAO.AuthTokenAO;
+import DataAccess.DataAccessException;
+import DataAccess.DataBase;
 import Handlers.*;
+import Model.AuthToken;
 import com.sun.net.httpserver.HttpServer;
 
+import javax.xml.crypto.Data;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -41,5 +46,21 @@ public class Server  {
         server.createContext("/event", new EventsRequestHandler());
         server.createContext("/", new FileHandler());
 
+    }
+    public static String getAuthToken(String userID) {
+        String token = null;
+        DataBase db = new DataBase();
+        AuthTokenAO ao = new AuthTokenAO();
+
+        try {
+            AuthToken at = ao.getToken(db.getAuthConnection(), userID);
+            if (!at.equals(null)) {
+                token = at.getTokenID();
+            }
+        } catch (DataAccessException e) {
+            e.printStackTrace();
+        }
+
+        return token;
     }
 }

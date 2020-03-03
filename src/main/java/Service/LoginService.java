@@ -14,8 +14,6 @@ public class LoginService {
         DataBase db = new DataBase();
         UserAO ua = new UserAO();
         AuthTokenAO at = new AuthTokenAO();
-
-
         LoginResponse lp = new LoginResponse();
         try {
             User u = ua.getUser(db.getUserConnection(), r.getUserName());
@@ -26,7 +24,12 @@ public class LoginService {
             lp.setAuthToken(token.getTokenID());
         } catch (DataAccessException e) {
             lp.setSuccess(false);
-            lp.setMessage(e.getMessage());
+            lp.setMessage("Username or Password Incorrect, please try again. ");
+            try {
+                db.closeAllConnections(false);
+            } catch (DataAccessException ex) {
+                ex.printStackTrace();
+            }
         }
         return lp;
     }

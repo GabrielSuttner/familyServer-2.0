@@ -22,7 +22,7 @@ public class AuthTokenAO {
         AuthToken at = null;
     try {
         try {
-            String sql = "SELECT TokenID, authToken, Username FROM authToken WHERE Username = '"+ userID +"';";
+            String sql = "SELECT Token_ID, Username FROM authTokens WHERE Username = '"+ userID +"';";
             stmt = connection.prepareStatement(sql);
 
             rs = stmt.executeQuery();
@@ -54,12 +54,18 @@ public class AuthTokenAO {
         PreparedStatement stmt = null;
 
         try {
-            String sql = "INSERT INTO (TokenID, Username)  VALUES(?, ?, ?);";
+            String sql = "INSERT INTO authTokens (Token_ID, Username)  VALUES(?, ?);";
 
             stmt = connection.prepareStatement(sql);
-
             stmt.setString(1, token.getTokenID());
             stmt.setString(2, token.getUserName());
+
+            if(stmt.executeUpdate() == 1) {
+                System.out.println("Added token for: " +token.getUserName());
+            } else {
+                System.out.println("Failed to add token for: " + token.getUserName());
+            }
+
         } catch (SQLException e){
             throw new DataAccessException("Error inserting New Token\n");
         } finally {
@@ -68,6 +74,8 @@ public class AuthTokenAO {
                     stmt.close();
                 } catch (SQLException e) {
                     e.printStackTrace();
+                    throw new DataAccessException("Error closing STMT in addToken");
+
                 }
             }
         }
@@ -82,7 +90,7 @@ public class AuthTokenAO {
     public void deleteToken(Connection connection, String userName) throws DataAccessException {
         PreparedStatement stmt = null;
         try {
-            String sql = "DELETE FROM authToken WHERE user_name = '" + userName +"';";
+            String sql = "DELETE FROM authTokens WHERE Username = '" + userName +"';";
             stmt = connection.prepareStatement(sql);
 
             stmt.executeUpdate();
@@ -90,7 +98,7 @@ public class AuthTokenAO {
             stmt.close();
         } catch (SQLException e) {
             e.printStackTrace();
-            throw new DataAccessException("Error deleting " + userName+" from authToken dataBase.");
+            throw new DataAccessException("Error deleting " + userName+" from authTokens dataBase.");
         }
     }
 }

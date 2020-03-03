@@ -114,7 +114,7 @@ public class EventAO {
      * @return list of events
      * @throws SQLException
      */
-    public List<Event> getEvents(Connection connection) throws SQLException {
+    public List<Event> getEvents(Connection connection) throws DataAccessException {
         List<Event> events = new ArrayList<>();
 
         return events;
@@ -150,7 +150,7 @@ public class EventAO {
      * @param eventID
      * @return specified event
      */
-    public Event getEvent(String eventID) {
+    public Event getEvent(Connection connection, String eventID) {
         Event newEv = null;
         return newEv;
     }

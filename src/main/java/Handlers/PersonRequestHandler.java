@@ -1,20 +1,20 @@
 package Handlers;
 
-import DAO.AuthTokenAO;
-import DAO.PersonAO;
 import DataAccess.DataAccessException;
 import DataAccess.DataBase;
-import Model.AuthToken;
-import Model.Person;
+import RequestResult.PersonResponse;
+import Service.DataService;
+import com.google.gson.Gson;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
+
+import static Server.Server.getAuthToken;
 
 public class PersonRequestHandler implements HttpHandler {
     @Override
@@ -23,49 +23,45 @@ public class PersonRequestHandler implements HttpHandler {
         try {
             if (exchange.getRequestMethod().toUpperCase().equals("GET")) {
                 Headers reqHeaders = exchange.getRequestHeaders();
-                if (reqHeaders.containsKey("Authorization")) {
-                    String authToken = reqHeaders.getFirst("Authorization");
-                    String userID = reqHeaders.getFirst("username");
-                    AuthTokenAO at = new AuthTokenAO();
-                    AuthToken token = null;
-                    db.openAuthConnection();
-                    token = at.getToken(db.getAuthConnection(), userID);
-                    if (token.equals(authToken)) {
+                String authToken = reqHeaders.get("Authorization").toString();
+                authToken = authToken.substring(1, authToken.length() - 1);
+                if (!authToken.equals(null)) {
+                    Gson gson = new Gson();
+                    String uri = exchange.getRequestURI().toString();
+                    int pos = uri.indexOf('/', 2);
+                    String userID = uri.substring(pos + 1);
 
-                        db.openPersonConnection();
-                        PersonAO pa = new PersonAO();
-                        Person person = pa.getPerson(db.getPersonConnection(), userID);
-                        String respData =
-                                "{ \"person\": {" +
-                                        "{ \"person_id\": "+ person.getPersonID() +"\"," +
-                                        "{ \"username\": "+ person.getUsername() +"\"," +
-                                        "{ \"first_name\": "+ person.getFirstName() +"\"," +
-                                        "{ \"last_name\": "+ person.getLastName() +"\"," +
-                                        "{ \"gender\": "+ person.getGender() +"\"," +
-                                        "{ \"father_id\": "+ person.getFatherID() +"\"," +
-                                        "{ \"mother_id\": "+ person.getMotherID() +"\"," +
-                                        "{ \"spouse_id\": "+ person.getSpouseID() +"\"" +
-                                        "}";
-                        db.closeAllConnections(true);
-                        exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
+                    DataService ds = new DataService();
 
-                        OutputStream respBody = exchange.getResponseBody();
+                    PersonResponse pr = ds.getPerson(userID);
 
-                        writeString(respData, respBody);
+                    String token = getAuthToken(userID);
+                    OutputStream respBody = exchange.getResponseBody();
 
-                        respBody.close();
-
+                     if (pr.isSuccess()) {
+                         if (!token.equals(null) && token.equals(authToken)) {
+                             exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
+                         } else {
+                             pr.setSuccess(false);
+                             pr.setMessage("Requested person does not belong to this user");
+                             exchange.sendResponseHeaders(HttpURLConnection.HTTP_UNAUTHORIZED, 0);
+                         }
                     } else {
-                        db.closeAuthConnection(true);
-                        exchange.sendResponseHeaders(HttpURLConnection.HTTP_UNAUTHORIZED, 0);
+                        exchange.sendResponseHeaders(HttpURLConnection.HTTP_NOT_FOUND, 0);
                     }
+
+                    OutputStreamWriter osw = new OutputStreamWriter(respBody);
+                    osw.write(gson.toJson(pr));
+
+                    osw.close();
+                    exchange.close();
                 } else {
                     exchange.sendResponseHeaders(HttpURLConnection.HTTP_UNAUTHORIZED, 0);
                 }
             } else {
                 exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, 0);
             }
-        } catch (IOException  | DataAccessException e) {
+        } catch (IOException e) {
             exchange.sendResponseHeaders(HttpURLConnection.HTTP_SERVER_ERROR, 0);
             exchange.getResponseBody().close();
             try {
@@ -75,11 +71,5 @@ public class PersonRequestHandler implements HttpHandler {
             }
             e.printStackTrace();
         }
-    }
-    private void writeString(String str, OutputStream os) throws IOException {
-        OutputStreamWriter sw = new OutputStreamWriter(os);
-        BufferedWriter bw = new BufferedWriter(sw);
-        bw.write(str);
-        bw.flush();
     }
 }

@@ -9,19 +9,21 @@ import java.util.UUID;
  *
  */
 public class Person {
-    @SerializedName("Person_ID")
+    @SerializedName("personID")
     private String PersonID;
+    @SerializedName("associatedUsername")
     private String Username;
-    @SerializedName("First_Name")
+    @SerializedName("firstName")
     private String FirstName;
-    @SerializedName("Last_Name")
+    @SerializedName("lastName")
     private String LastName;
+    @SerializedName("gender")
     private String Gender;
-    @SerializedName("Father_ID")
+    @SerializedName("fatherID")
     private String FatherID;
-    @SerializedName("Mother_ID")
+    @SerializedName("motherID")
     private String MotherID;
-    @SerializedName("Spouse_ID")
+    @SerializedName("spouseID")
     private String SpouseID;
 
 

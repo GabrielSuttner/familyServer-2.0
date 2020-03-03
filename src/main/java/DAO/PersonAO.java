@@ -3,6 +3,7 @@ package DAO;
 import DataAccess.DataAccessException;
 import Model.Person;
 
+import javax.xml.crypto.Data;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -128,7 +129,7 @@ public class PersonAO {
      * @return
      * @throws SQLException
      */
-    public List<Person> getPersons(Connection connection) throws SQLException {
+    public List<Person> getPersons(Connection connection) throws DataAccessException {
         List<Person> people = new ArrayList<>();
         PreparedStatement stmt = null;
         ResultSet rs = null;
@@ -150,12 +151,19 @@ public class PersonAO {
 
                 people.add(new Person(personId, userName, fName, lName, gender, dad, mom, spouse));
             }
-        } finally {
-            if(rs != null) {
-                rs.close();
-            }
-            if(stmt != null) {
-                stmt.close();
+        } catch(SQLException e){
+            e.printStackTrace();
+            throw new DataAccessException("Error retreiving all data from Persons table");
+        }finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (stmt != null) {
+                    stmt.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
         }
 

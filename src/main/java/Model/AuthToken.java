@@ -12,6 +12,14 @@ public class AuthToken {
     @SerializedName("Username")
     private String userName;
 
+    /**
+     * @param userName
+     */
+    public AuthToken(String userName) {
+        this.tokenID = UUID.randomUUID().toString();
+        this.userName = userName;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -34,13 +42,7 @@ public class AuthToken {
     }
 
 
-    /**
-     * @param userName
-     */
-    public AuthToken(String userName) {
-        this.tokenID = UUID.randomUUID().toString();
-        this.userName = userName;
-    }
+
 
     /**
      * @param tokenID

@@ -6,6 +6,16 @@ import java.util.List;
 
 public class EventsResponse {
     private List<Event> data;
+    private String message;
+    private boolean success;
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
 
     public List<Event> getData() {
         return data;
@@ -23,5 +33,4 @@ public class EventsResponse {
         this.success = success;
     }
 
-    private boolean success;
 }
