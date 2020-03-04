@@ -40,6 +40,40 @@ public class UserAO {
         }
     }
 
+    public void addUsers(Connection connection, List<User> users) throws DataAccessException {
+        PreparedStatement stmt = null;
+
+        try {
+            for(User user : users) {
+                String sql = "INSERT INTO users (Username, Password, Email, First_Name, " +
+                        "Last_Name, Gender, Person_ID) " +
+                        "VALUES(?, ?, ?, ?, ?, ?, ?);";
+                stmt = connection.prepareStatement(sql);
+
+                stmt.setString(1, user.getUserName());
+                stmt.setString(2, user.getPassword());
+                stmt.setString(3, user.getEmail());
+                stmt.setString(4, user.getFirstName());
+                stmt.setString(5, user.getLastName());
+                stmt.setString(6, user.getGender());
+                stmt.setString(7, user.getPersonID());
+
+                stmt.executeUpdate();
+                System.out.println("Added user: " + user.getUserName());
+            }
+        } catch(SQLException e ){
+            throw new DataAccessException("Failed to add user in addUssers method");
+        } finally {
+            try {
+                if (stmt != null) {
+                    stmt.close();
+                }
+            } catch (SQLException e) {
+                throw new DataAccessException("Error closing Result Set or PreparedStatement");
+            }
+        }
+    }
+
 
     public User getUser(Connection connection, String userID) throws DataAccessException {
         User newU = null;

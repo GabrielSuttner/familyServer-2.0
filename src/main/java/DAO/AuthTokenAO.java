@@ -7,6 +7,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 public class AuthTokenAO {
     /**
@@ -80,6 +81,37 @@ public class AuthTokenAO {
             }
         }
     }
+    public void addTokens(Connection authConnection, List<AuthToken> tokens) throws DataAccessException {
+        PreparedStatement stmt = null;
+
+        try {
+            for(AuthToken token: tokens) {
+                String sql = "INSERT INTO authTokens (Token_ID, Username)  VALUES(?, ?);";
+
+                stmt = authConnection.prepareStatement(sql);
+                stmt.setString(1, token.getTokenID());
+                stmt.setString(2, token.getUserName());
+
+                if (stmt.executeUpdate() == 1) {
+                    System.out.println("Added token for: " + token.getUserName());
+                } else {
+                    System.out.println("Failed to add token for: " + token.getUserName());
+                }
+            }
+        } catch (SQLException e){
+            throw new DataAccessException("Error inserting New Token\n");
+        } finally {
+            if (stmt != null) {
+                try {
+                    stmt.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    throw new DataAccessException("Error closing STMT in addToken");
+
+                }
+            }
+        }
+    }
 
     /**
      *
@@ -101,4 +133,6 @@ public class AuthTokenAO {
             throw new DataAccessException("Error deleting " + userName+" from authTokens dataBase.");
         }
     }
+
+
 }

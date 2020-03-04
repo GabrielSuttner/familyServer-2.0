@@ -4,32 +4,41 @@ import Model.Event;
 import Model.Person;
 import Model.User;
 
-public class LoadRequest {
-    private User[] users;
-    private Person[] persons;
-    private Event[] events;
+import java.util.List;
 
-    public User[] getUsers() {
+public class LoadRequest {
+    public LoadRequest(List<User> users, List<Person> persons, List<Event> events) {
+        this.users = users;
+        this.persons = persons;
+        this.events = events;
+    }
+
+    public List<User> getUsers() {
         return users;
     }
 
-    public void setUsers(User[] users) {
+    public void setUsers(List<User> users) {
         this.users = users;
     }
 
-    public Person[] getPersons() {
+    public List<Person> getPersons() {
         return persons;
     }
 
-    public void setPersons(Person[] persons) {
+    public void setPersons(List<Person> persons) {
         this.persons = persons;
     }
 
-    public Event[] getEvents() {
+    public List<Event> getEvents() {
         return events;
     }
 
-    public void setEvents(Event[] events) {
+    public void setEvents(List<Event> events) {
         this.events = events;
     }
+
+    private List<User> users;
+    private List<Person> persons;
+    private List<Event> events;
+
 }

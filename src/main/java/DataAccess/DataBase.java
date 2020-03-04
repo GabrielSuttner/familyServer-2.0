@@ -228,7 +228,7 @@ public class DataBase {
        clearUserTables();
     }
 
-    private void clearUserTables() throws DataAccessException {
+    public void clearUserTables() throws DataAccessException {
         if(this.userConnection == null) {
             openUserConnection();
         }

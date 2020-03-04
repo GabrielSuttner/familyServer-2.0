@@ -61,6 +61,48 @@ public class PersonAO {
         }
     }
 
+    public void addPersons(Connection connection, List<Person> persons) throws DataAccessException {
+        PreparedStatement stmt = null;
+
+        try {
+            for (Person person : persons){
+                String sql = "INSERT INTO persons (Person_ID, " +
+                        "Username, First_Name, Last_Name, Gender," +
+                        "Father_ID, Mother_ID, Spouse_ID) " +
+                        "VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
+                stmt = connection.prepareStatement(sql);
+
+                stmt.setString(1, person.getPersonID());
+                stmt.setString(2, person.getUsername());
+                stmt.setString(3, person.getFirstName());
+                stmt.setString(4, person.getLastName());
+                stmt.setString(5, person.getGender());
+                stmt.setString(6, person.getFatherID());
+                stmt.setString(7, person.getMotherID());
+                stmt.setString(8, person.getSpouseID());
+
+                if (stmt.executeUpdate() == 1) {
+                    System.out.println("Added Person: " + person.getFirstName());
+                } else {
+                    System.out.println("Failed to add Person: " + person.getPersonID());
+                }
+            }
+        } catch(SQLException e) {
+            e.printStackTrace();
+            throw new DataAccessException("Error adding  to Persons database in addPersons method.");
+        }
+        finally
+        {
+            try {
+                if (stmt != null) {
+                    stmt.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                throw new DataAccessException("Error closing STMT in addPerson");
+            }
+        }
+    }
     /**
      *
      * @param connection

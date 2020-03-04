@@ -65,6 +65,30 @@ public class Event {
         this.Year = year;
     }
 
+    /**
+     *
+     * @param eventID
+     * @param associatedUsername
+     * @param personID
+     * @param latitude
+     * @param longitude
+     * @param country
+     * @param city
+     * @param eventType
+     * @param year
+     */
+    public Event(String eventID, String associatedUsername, String personID, double latitude, double longitude, String country, String city, String eventType, int year) {
+        this.EventID = eventID;
+        this.AssociatedUsername = associatedUsername;
+        this.PersonID = personID;
+        this.Latitude = latitude;
+        this.Longitude = longitude;
+        this.Country = country;
+        this.City = city;
+        this.EventType = eventType;
+        this.Year = year;
+    }
+
     public String getEventID() {
         return EventID;
     }
