@@ -1,6 +1,7 @@
 package Handlers;
 
 import Model.Event;
+import Model.ListContainer;
 import Model.Person;
 import Model.User;
 import javax.json.Json;
@@ -26,17 +27,14 @@ public class LoadRequestHandler implements HttpHandler {
                 List<User> users = null;
                 List<Person> persons = null;
                 List<Event> events = null;
-                Reader reader1 = new InputStreamReader(exchange.getRequestBody());
-                Reader reader2 = new InputStreamReader(exchange.getRequestBody());
                 Reader reader = new InputStreamReader(exchange.getRequestBody());
+                Gson gson = new Gson();
+                ListContainer container = null;
 
-                try {
-                    persons = parsePersons(reader);
-                    users = parseUsers(reader1);
-                    events = parseEvents(reader2);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                container = gson.fromJson(reader, ListContainer.class);
+                users = container.getUsers();
+                persons = container.getPersons();
+                events = container.getEvents();
 
                 LoadRequest request = new LoadRequest(users, persons, events);
                 LoadService loadService = new LoadService();
@@ -46,7 +44,6 @@ public class LoadRequestHandler implements HttpHandler {
                 OutputStream respBody = exchange.getResponseBody();
                 OutputStreamWriter osw = new OutputStreamWriter(respBody);
 
-                Gson gson = new Gson();
                 osw.write(gson.toJson(response));
 
                 if(response.isSuccess()) {
@@ -105,7 +102,7 @@ public class LoadRequestHandler implements HttpHandler {
                         break;
                     default:
                         if(fullfilled) {
-                            bufferedReader.close();
+                            //bufferedReader.close();
                             return users;
                         }
                 }
