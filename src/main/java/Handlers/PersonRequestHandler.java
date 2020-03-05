@@ -1,9 +1,11 @@
 package Handlers;
 
+import DAO.UserAO;
 import DataAccess.DataAccessException;
 import DataAccess.DataBase;
-import Model.Person;
-import RequestResult.PersonResponse;
+import Model.User;
+import Response.PersonResponse;
+import Response.PersonsResponse;
 import Service.DataService;
 import com.google.gson.Gson;
 import com.sun.net.httpserver.Headers;
@@ -31,30 +33,69 @@ public class PersonRequestHandler implements HttpHandler {
                     Gson gson = new Gson();
                     String uri = exchange.getRequestURI().toString();
                     int pos = uri.indexOf('/', 2);
-                    String userID = uri.substring(pos + 1);
 
-                    DataService ds = new DataService();
-                    PersonResponse pr = new PersonResponse();
-                    OutputStream respBody = exchange.getResponseBody();
+                    //run the code for /person/ api
+                    if(uri.length() < 9) {
+                        String userID = getUserIDViaToken(authToken);
+                        UserAO ua = new UserAO();
+                        String personID = null;
 
-                    if(isRelatedHelper(userID, authToken)){
-                        pr = ds.getPerson(userID);
+                        try {
+                            User user = ua.getUser(db.getUserConnection(), userID);
+                            db.closeUserConnection(true);
+                            personID = user.getPersonID();
+                        } catch (DataAccessException e) {
+                            e.printStackTrace();
+                            try {
+                                db.closeUserConnection(true);
+                            } catch (DataAccessException ex) {
+                                ex.printStackTrace();
+                            }
+                        }
+
+                        DataService ds = new DataService();
+                        OutputStream respBody = exchange.getResponseBody();
+
+                        PersonsResponse pr = ds.getPeople(personID);
                         if (pr.isSuccess()) {
                             exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
                         } else {
                             exchange.sendResponseHeaders(HttpURLConnection.HTTP_NOT_FOUND, 0);
                         }
+
+                        OutputStreamWriter osw = new OutputStreamWriter(respBody);
+                        osw.write(gson.toJson(pr));
+
+                        osw.close();
+                        exchange.close();
+
+                        //run code for /person/*
                     } else {
-                        pr.setSuccess(false);
-                        pr.setMessage("Requested person is not associated to this user");
-                        exchange.sendResponseHeaders(HttpURLConnection.HTTP_UNAUTHORIZED, 0);
+                        String userID = uri.substring(pos + 1);
+
+                        DataService ds = new DataService();
+                        PersonResponse pr = new PersonResponse();
+                        OutputStream respBody = exchange.getResponseBody();
+
+                        if (isRelatedHelper(userID, authToken)) {
+                            pr = ds.getPerson(userID);
+                            if (pr.isSuccess()) {
+                                exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
+                            } else {
+                                exchange.sendResponseHeaders(HttpURLConnection.HTTP_NOT_FOUND, 0);
+                            }
+                        } else {
+                            pr.setSuccess(false);
+                            pr.setMessage("Requested person is not associated to this user");
+                            exchange.sendResponseHeaders(HttpURLConnection.HTTP_UNAUTHORIZED, 0);
+                        }
+
+                        OutputStreamWriter osw = new OutputStreamWriter(respBody);
+                        osw.write(gson.toJson(pr));
+
+                        osw.close();
+                        exchange.close();
                     }
-
-                    OutputStreamWriter osw = new OutputStreamWriter(respBody);
-                    osw.write(gson.toJson(pr));
-
-                    osw.close();
-                    exchange.close();
                 } else {
                     exchange.sendResponseHeaders(HttpURLConnection.HTTP_UNAUTHORIZED, 0);
                 }

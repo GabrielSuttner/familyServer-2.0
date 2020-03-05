@@ -9,7 +9,7 @@ import Model.AuthToken;
 import Model.Person;
 import Model.User;
 import RequestResult.RegisterRequest;
-import RequestResult.RegisterResponse;
+import Response.RegisterResponse;
 
 public class RegisterService {
     public RegisterResponse register(RegisterRequest r) {

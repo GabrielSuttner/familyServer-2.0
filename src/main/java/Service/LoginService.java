@@ -7,7 +7,7 @@ import DataAccess.DataBase;
 import Model.AuthToken;
 import Model.User;
 import RequestResult.LoginRequest;
-import RequestResult.LoginResponse;
+import Response.LoginResponse;
 
 public class LoginService {
     public LoginResponse login(LoginRequest r)  {

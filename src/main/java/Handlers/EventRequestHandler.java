@@ -1,20 +1,26 @@
 package Handlers;
 
-import DAO.AuthTokenAO;
 import DAO.EventAO;
+import DAO.UserAO;
 import DataAccess.DataAccessException;
 import DataAccess.DataBase;
-import Model.AuthToken;
 import Model.Event;
+import Model.User;
+import Response.EventResponse;
+import Response.EventsResponse;
+import Response.PersonsResponse;
+import Service.DataService;
+import com.google.gson.Gson;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
+
+import static Server.Server.*;
 
 public class EventRequestHandler implements HttpHandler {
     @Override
@@ -23,41 +29,86 @@ public class EventRequestHandler implements HttpHandler {
         try {
             if (exchange.getRequestMethod().toUpperCase().equals("GET")) {
                 Headers reqHeaders = exchange.getRequestHeaders();
-                if (reqHeaders.containsKey("Authorization")) {
-                    String authToken = reqHeaders.getFirst("Authorization");
-                    String userID = reqHeaders.getFirst("username");
-                    AuthTokenAO at = new AuthTokenAO();
-                    AuthToken token = null;
-                    db.openAuthConnection();
-                    token = at.getToken(db.getAuthConnection(), userID);
-                    if (token.equals(authToken)) {
+                String authToken = reqHeaders.get("Authorization").toString();
+                authToken = authToken.substring(1, authToken.length() - 1);
 
-                        db.openEventConnection();
-                        EventAO ea = new EventAO();
-                        Event event = ea.getEvent(db.getEventConnection(), userID);
-                       /*String respData =
-                                "{ \"person\": {" +
-                                        "{ \"person_id\": "+ event.getPersonID() +"\"," +
-                                        "{ \"username\": "+ event.get() +"\"," +
-                                        "{ \"first_name\": "+ event.getFirstName() +"\"," +
-                                        "{ \"last_name\": "+ event.getLastName() +"\"," +
-                                        "{ \"gender\": "+ event.getGender() +"\"," +
-                                        "{ \"father_id\": "+ event.getFatherID() +"\"," +
-                                        "{ \"mother_id\": "+ event.getMotherID() +"\"," +
-                                        "{ \"spouse_id\": "+ event.getSpouseID() +"\"" +
-                                        "}";*/
-                        db.closeAllConnections(true);
-                        exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
+                EventResponse er = new EventResponse();
+                OutputStream respBody = exchange.getResponseBody();
+                if (authorized(authToken)) {
+                    Gson gson = new Gson();
+                    String uri = exchange.getRequestURI().toString();
+                    int pos = uri.indexOf('/', 2);
 
-                        OutputStream respBody = exchange.getResponseBody();
+                    if(uri.length() < 8) {
+                            String userID = getUserIDViaToken(authToken);
+                            UserAO ua = new UserAO();
+                            String personID = null;
 
-                        //writeString(respData, respBody);
+                            try {
+                                User user = ua.getUser(db.getUserConnection(), userID);
+                                db.closeUserConnection(true);
+                                personID = user.getPersonID();
+                            } catch (DataAccessException e) {
+                                e.printStackTrace();
+                                try {
+                                    db.closeUserConnection(true);
+                                } catch (DataAccessException ex) {
+                                    ex.printStackTrace();
+                                }
+                            }
 
-                        respBody.close();
+                            DataService ds = new DataService();
+                            EventsResponse pr = ds.getEvents(personID);
+                            if (pr.isSuccess()) {
+                                exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
+                            } else {
+                                exchange.sendResponseHeaders(HttpURLConnection.HTTP_NOT_FOUND, 0);
+                            }
+
+                            OutputStreamWriter osw = new OutputStreamWriter(respBody);
+                            osw.write(gson.toJson(pr));
+
+                            osw.close();
+                            exchange.close();
 
                     } else {
-                        db.closeAuthConnection(true);
-                        exchange.sendResponseHeaders(HttpURLConnection.HTTP_UNAUTHORIZED, 0);
+
+                        String eventID = uri.substring(pos + 1);
+
+                        DataService ds = new DataService();
+                        EventAO ea = new EventAO();
+                        Event event = null;
+                        try {
+                            event = ea.getEvent(db.getEventConnection(), eventID);
+                            db.closeEventConnection(true);
+                        } catch (DataAccessException e) {
+                            e.printStackTrace();
+                            try {
+                                db.closeEventConnection(false);
+                            } catch (DataAccessException ex) {
+                                ex.printStackTrace();
+                            }
+                            er.setMessage("User not associated with event");
+                            er.setSuccess(false);
+                        }
+                        if (isRelatedHelper(event.getPersonID(), authToken)) {
+                            er = ds.getEvent(eventID);
+                            if (er.isSuccess()) {
+                                exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
+                            } else {
+                                exchange.sendResponseHeaders(HttpURLConnection.HTTP_NOT_FOUND, 0);
+                            }
+                        } else {
+                            er.setSuccess(false);
+                            er.setMessage("Requested person is not associated to this user");
+                            exchange.sendResponseHeaders(HttpURLConnection.HTTP_UNAUTHORIZED, 0);
+                        }
+
+                        OutputStreamWriter osw = new OutputStreamWriter(respBody);
+                        osw.write(gson.toJson(er));
+
+                        osw.close();
+                        exchange.close();
                     }
                 } else {
                     exchange.sendResponseHeaders(HttpURLConnection.HTTP_UNAUTHORIZED, 0);
@@ -65,7 +116,7 @@ public class EventRequestHandler implements HttpHandler {
             } else {
                 exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, 0);
             }
-        } catch (IOException  | DataAccessException e) {
+        } catch (IOException e) {
             exchange.sendResponseHeaders(HttpURLConnection.HTTP_SERVER_ERROR, 0);
             exchange.getResponseBody().close();
             try {
@@ -75,11 +126,5 @@ public class EventRequestHandler implements HttpHandler {
             }
             e.printStackTrace();
         }
-    }
-    private void writeString(String str, OutputStream os) throws IOException {
-        OutputStreamWriter sw = new OutputStreamWriter(os);
-        BufferedWriter bw = new BufferedWriter(sw);
-        bw.write(str);
-        bw.flush();
     }
 }

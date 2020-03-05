@@ -1,7 +1,7 @@
 package Handlers;
 import Model.User;
 import RequestResult.RegisterRequest;
-import RequestResult.RegisterResponse;
+import Response.RegisterResponse;
 import Service.RegisterService;
 import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;

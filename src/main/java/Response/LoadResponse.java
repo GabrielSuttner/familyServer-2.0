@@ -1,7 +1,8 @@
-package RequestResult;
+package Response;
 
-public class ErrorResponse {
+public class LoadResponse {
     private String message;
+    private boolean success;
 
     public String getMessage() {
         return message;
@@ -18,6 +19,4 @@ public class ErrorResponse {
     public void setSuccess(boolean success) {
         this.success = success;
     }
-
-    private boolean success = false;
 }

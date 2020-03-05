@@ -49,9 +49,7 @@ public class Server  {
         server.createContext("/fill/", new FillRequestHandler());
         server.createContext("/load", new LoadRequestHandler());
         server.createContext("/person/", new PersonRequestHandler());
-        server.createContext("/person", new PersonsRequestHandler());
         server.createContext("/event/", new EventRequestHandler());
-        server.createContext("/event", new EventsRequestHandler());
         server.createContext("/", new FileHandler());
 
     }
@@ -61,7 +59,7 @@ public class Server  {
      * @param authToken
      * @return userID associated with authToken
      */
-    public static String getAuthToken(String authToken) {
+    public static String getUserIDViaToken(String authToken) {
         String userID = null;
         DataBase db = new DataBase();
         AuthTokenAO ao = new AuthTokenAO();
@@ -95,7 +93,7 @@ public class Server  {
         visited.clear();
         found = false;
         //user string is the person that requested the person
-        String user = getAuthToken(authToken);
+        String user = getUserIDViaToken(authToken);
         if (user == null) {
             return false;
         }
@@ -116,6 +114,11 @@ public class Server  {
     }
 
     public static void isRelated(Person person, String requestedPersonID) {
+        if(requestedPersonID == null) {
+            requestedPersonID = "temp";
+            found = false;
+            visited.clear();
+        }
         if(found) return;
         if(person.getPersonID() == requestedPersonID) {
             found = true;
@@ -216,5 +219,9 @@ public class Server  {
             }
         }
         return false;
+    }
+
+    public static Set<String> getUserIDSet() {
+        return visited;
     }
 }

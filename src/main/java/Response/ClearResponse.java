@@ -1,4 +1,4 @@
-package RequestResult;
+package Response;
 
 public class ClearResponse {
     private String message = "Clear Succeeded";

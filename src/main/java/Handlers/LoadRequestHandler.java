@@ -4,11 +4,9 @@ import Model.Event;
 import Model.ListContainer;
 import Model.Person;
 import Model.User;
-import javax.json.Json;
-import javax.json.stream.JsonParser;
 
 import RequestResult.LoadRequest;
-import RequestResult.LoadResponse;
+import Response.LoadResponse;
 import Service.LoadService;
 import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
@@ -16,7 +14,6 @@ import com.sun.net.httpserver.HttpHandler;
 
 import java.io.*;
 import java.net.HttpURLConnection;
-import java.util.ArrayList;
 import java.util.List;
 
 public class LoadRequestHandler implements HttpHandler {

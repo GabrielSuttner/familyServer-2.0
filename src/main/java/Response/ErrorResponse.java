@@ -1,9 +1,7 @@
-package RequestResult;
+package Response;
 
-public class FillResponse {
-    //Successfully added X persons and Y events to the database.
+public class ErrorResponse {
     private String message;
-    private boolean success;
 
     public String getMessage() {
         return message;
@@ -20,4 +18,6 @@ public class FillResponse {
     public void setSuccess(boolean success) {
         this.success = success;
     }
+
+    private boolean success = false;
 }

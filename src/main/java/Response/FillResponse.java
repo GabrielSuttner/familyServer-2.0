@@ -1,11 +1,7 @@
-package RequestResult;
+package Response;
 
-import Model.Event;
-
-import java.util.List;
-
-public class EventsResponse {
-    private List<Event> data;
+public class FillResponse {
+    //Successfully added X persons and Y events to the database.
     private String message;
     private boolean success;
 
@@ -17,14 +13,6 @@ public class EventsResponse {
         this.message = message;
     }
 
-    public List<Event> getData() {
-        return data;
-    }
-
-    public void setData(List<Event> data) {
-        this.data = data;
-    }
-
     public boolean isSuccess() {
         return success;
     }
@@ -32,5 +20,4 @@ public class EventsResponse {
     public void setSuccess(boolean success) {
         this.success = success;
     }
-
 }

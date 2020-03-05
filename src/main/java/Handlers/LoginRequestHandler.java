@@ -1,10 +1,9 @@
 package Handlers;
 
-import DataAccess.DataAccessException;
 import DataAccess.DataBase;
 import Model.User;
 import RequestResult.LoginRequest;
-import RequestResult.LoginResponse;
+import Response.LoginResponse;
 import Service.LoginService;
 import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;

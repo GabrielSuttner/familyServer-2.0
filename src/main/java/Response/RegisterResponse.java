@@ -1,4 +1,4 @@
-package RequestResult;
+package Response;
 
 public class RegisterResponse {
     private String authToken;

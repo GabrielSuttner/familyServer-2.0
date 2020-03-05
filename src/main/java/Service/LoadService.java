@@ -1,17 +1,15 @@
 package Service;
 
-import DAO.AuthTokenAO;
 import DAO.EventAO;
 import DAO.PersonAO;
 import DAO.UserAO;
 import DataAccess.DataAccessException;
 import DataAccess.DataBase;
-import Model.AuthToken;
 import Model.Event;
 import Model.Person;
 import Model.User;
 import RequestResult.LoadRequest;
-import RequestResult.LoadResponse;
+import Response.LoadResponse;
 
 import java.util.List;
 
@@ -27,13 +25,9 @@ public class LoadService {
         UserAO ua = new UserAO();
         EventAO ea = new EventAO();
         PersonAO pa = new PersonAO();
-//        AuthTokenAO aa = new AuthTokenAO();
         try {
-//            for(User user : users) {
-//                AuthToken token = new AuthToken(user.getUserName());
-//                aa.addToken(db.getAuthConnection(), token);
-//                db.closeAuthConnection(true);
-//            }
+            db.clearTables();
+
             ua.addUsers(db.getUserConnection(), users);
             db.closeUserConnection(true);
 
@@ -42,6 +36,7 @@ public class LoadService {
 
             pa.addPersons(db.getPersonConnection(), persons);
             db.closePersonConnection(true);
+
 
             response.setMessage("Successfully added " + users.size() +" users, "+ persons.size()+" persons, " +
                     "and "+ events.size() +" events to the database");

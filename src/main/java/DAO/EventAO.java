@@ -193,6 +193,43 @@ public class EventAO {
         return events;
     }
 
+    public List<Event> getUserEvents(Connection connection, String personID) throws DataAccessException {
+        List<Event> events = new ArrayList<>();
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+
+        try {
+            String sql = "SELECT Event_ID, Username, Person_ID, Latitude," +
+                    " Longitude, Country, City, Event_Type, Year FROM events " +
+                    "Where Person_ID = '" + personID + "';";
+            stmt = connection.prepareStatement(sql);
+            rs = stmt.executeQuery();
+            while(rs.next()) {
+
+                events.add( new Event(rs.getString(1), rs.getString(2),
+                        rs.getString(3), rs.getDouble(4), rs.getDouble(5),
+                        rs.getString(6), rs.getString(7), rs.getString(8),
+                        rs.getInt(9)));
+            }
+        } catch(SQLException e){
+            e.printStackTrace();
+            throw new DataAccessException("Error retreiving all data from Events table");
+        }finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (stmt != null) {
+                    stmt.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return events;
+    }
+
     /**
      * @param eventID
      * @return specified event

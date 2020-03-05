@@ -6,12 +6,18 @@ import DataAccess.DataAccessException;
 import DataAccess.DataBase;
 import Model.Event;
 import Model.Person;
-import RequestResult.EventReponse;
-import RequestResult.EventsResponse;
-import RequestResult.PersonResponse;
-import RequestResult.PersonsResponse;
+import Response.EventsResponse;
+import Response.PersonResponse;
+import Response.PersonsResponse;
+import Response.EventResponse;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
+
+import static Server.Server.getUserIDSet;
+import static Server.Server.isRelated;
 
 public class DataService{
     public PersonResponse getPerson(String personID) {
@@ -36,19 +42,29 @@ public class DataService{
         }
         return pr;
     }
-    public PersonsResponse getPeople() {
-        PersonsResponse people = new PersonsResponse();
-        List<Person> persons = null;
+    public PersonsResponse getPeople(String personID) {
+        PersonsResponse response = new PersonsResponse();
+        List<Person> persons = new ArrayList<>();
+        Person person = null;
         DataBase db = new DataBase();
         PersonAO pa = new PersonAO();
-
         try {
-            persons = pa.getPersons(db.getPersonConnection());
+
+            isRelated(pa.getPerson(db.getPersonConnection(), personID), null);
             db.closePersonConnection(true);
-            people.setData(persons);
+            Set<String> ids = getUserIDSet();
+
+            for(String s : ids){
+                person = pa.getPerson(db.getPersonConnection(), s);
+                db.closePersonConnection(true);
+                persons.add(person);
+            }
+
+            response.setData(persons);
+            response.setSuccess(true);
         } catch (DataAccessException e) {
-            people.setSuccess(false);
-            people.setMessage(e.getMessage());
+            response.setSuccess(false);
+            response.setMessage(e.getMessage());
             e.printStackTrace();
             try {
                 db.closePersonConnection(false);
@@ -57,16 +73,16 @@ public class DataService{
             }
         }
 
-        return people;
+        return response;
     }
-    public EventReponse getEvent(String eventID) {
+    public EventResponse getEvent(String eventID) {
         Event event = null;
         DataBase db = new DataBase();
         EventAO pa = new EventAO();
-        EventReponse pr = new EventReponse();
+        EventResponse pr = new EventResponse();
 
         try {
-            event = pa.getEvent(db.getPersonConnection(), eventID);
+            event = pa.getEvent(db.getEventConnection(), eventID);
             db.closeEventConnection(true);
             pr.setField(event);
         } catch (DataAccessException e) {
@@ -82,19 +98,33 @@ public class DataService{
         return pr;
     }
 
-    public EventsResponse getEvents() {
-        EventsResponse people = new EventsResponse();
-        List<Event> events = null;
+    public EventsResponse getEvents(String personID) {
+        EventsResponse response = new EventsResponse();
+        List<Event> events = new ArrayList<>();
+        List<Event> tempEvents = null;
         DataBase db = new DataBase();
-        EventAO pa = new EventAO();
+        PersonAO pa = new PersonAO();
+        EventAO ea = new EventAO();
 
         try {
-            events = pa.getEvents(db.getEventConnection());
-            db.closeEventConnection(true);
-            people.setData(events);
+
+            isRelated(pa.getPerson(db.getPersonConnection(), personID), null);
+            db.closePersonConnection(true);
+            Set<String> ids = getUserIDSet();
+
+            for(String s : ids){
+                tempEvents = ea.getUserEvents(db.getEventConnection(), s);
+                db.closeEventConnection(true);
+                for(Event e : tempEvents) {
+                    events.add(e);
+                }
+            }
+
+            response.setData(events);
+            response.setSuccess(true);
         } catch (DataAccessException e) {
-            people.setSuccess(false);
-            people.setMessage(e.getMessage());
+            response.setSuccess(false);
+            response.setMessage(e.getMessage());
             e.printStackTrace();
             try {
                 db.closeEventConnection(false);
@@ -103,7 +133,7 @@ public class DataService{
             }
         }
 
-        return people;
+        return response;
     }
 
 }

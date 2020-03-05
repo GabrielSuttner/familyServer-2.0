@@ -1,6 +1,11 @@
-package RequestResult;
+package Response;
 
-public class LoadResponse {
+import Model.Event;
+
+import java.util.List;
+
+public class EventsResponse {
+    private List<Event> data;
     private String message;
     private boolean success;
 
@@ -12,6 +17,14 @@ public class LoadResponse {
         this.message = message;
     }
 
+    public List<Event> getData() {
+        return data;
+    }
+
+    public void setData(List<Event> data) {
+        this.data = data;
+    }
+
     public boolean isSuccess() {
         return success;
     }
@@ -19,4 +32,5 @@ public class LoadResponse {
     public void setSuccess(boolean success) {
         this.success = success;
     }
+
 }

@@ -1,11 +1,7 @@
 package Handlers;
 
-import Model.User;
-import RequestResult.ClearResponse;
-import RequestResult.RegisterRequest;
-import RequestResult.RegisterResponse;
+import Response.ClearResponse;
 import Service.ClearService;
-import Service.RegisterService;
 import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
