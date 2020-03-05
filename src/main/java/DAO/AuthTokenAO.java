@@ -48,6 +48,35 @@ public class AuthTokenAO {
     /**
      *
      * @param connection
+     * @param authToken
+     * @return AuthToken
+     * @throws DataAccessException
+     */
+    public AuthToken getTokenByAuthToken(Connection connection, String authToken) throws DataAccessException {
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        AuthToken at = null;
+        try {
+            String sql = "SELECT Token_ID, Username FROM authTokens WHERE Token_ID = '"+ authToken +"';";
+            stmt = connection.prepareStatement(sql);
+
+            rs = stmt.executeQuery();
+            String id = rs.getString(1);
+            String user = rs.getString(2);
+            at = new AuthToken(id, user);
+            rs.close();
+            stmt.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new DataAccessException("Error retrieving authToken");
+        }
+
+        return at;
+    }
+
+        /**
+     *
+     * @param connection
      * @param token
      * @throws DataAccessException
      */

@@ -17,16 +17,29 @@ public class LoginService {
         LoginResponse lp = new LoginResponse();
         try {
             User u = ua.getUser(db.getUserConnection(), r.getUserName());
+            try {
+                db.closeUserConnection(true);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             AuthToken token = new AuthToken(u.getUserName());
+            at.addToken(db.getAuthConnection(), token);
+            try {
+                db.closeAuthConnection(true);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             lp.setSuccess(true);
             lp.setPersonID(u.getPersonID());
             lp.setUserName(u.getUserName());
             lp.setAuthToken(token.getTokenID());
+
         } catch (DataAccessException e) {
             lp.setSuccess(false);
             lp.setMessage("Username or Password Incorrect, please try again. ");
             try {
-                db.closeAllConnections(false);
+                db.closeUserConnection(false);
+                db.closeAuthConnection(false);
             } catch (DataAccessException ex) {
                 ex.printStackTrace();
             }

@@ -12,7 +12,6 @@ public class User {
     private String firstName;
     private String lastName;
     private String gender;
-    @SerializedName("Person_ID")
     private String personID;
 
     public User(String userName, String password, String email, String firstName, String lastName, String gender, String personID) {

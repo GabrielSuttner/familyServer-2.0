@@ -6,18 +6,23 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class Event {
-    @SerializedName("Event_ID")
+    @SerializedName("eventID")
     private String EventID;
-    @SerializedName("Username")
+    @SerializedName("associatedUsername")
     private String AssociatedUsername;
-    @SerializedName("Person_ID")
+    @SerializedName("personID")
     private String PersonID;
+    @SerializedName("latitude")
     private double Latitude;
+    @SerializedName("longitude")
     private double Longitude;
+    @SerializedName("country")
     private String Country;
+    @SerializedName("city")
     private String City;
-    @SerializedName("Event_Type")
+    @SerializedName("eventType")
     private String EventType;
+    @SerializedName("year")
     private int Year;
 
     @Override
@@ -54,6 +59,7 @@ public class Event {
      * @param year
      */
     public Event(String associatedUsername, String personID, double latitude, double longitude, String country, String city, String eventType, int year) {
+
         this.EventID = UUID.randomUUID().toString();
         this.AssociatedUsername = associatedUsername;
         this.PersonID = personID;

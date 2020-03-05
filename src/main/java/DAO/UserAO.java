@@ -62,7 +62,8 @@ public class UserAO {
                 System.out.println("Added user: " + user.getUserName());
             }
         } catch(SQLException e ){
-            throw new DataAccessException("Failed to add user in addUssers method");
+            e.printStackTrace();
+            throw new DataAccessException("Failed to add user in addUsers method");
         } finally {
             try {
                 if (stmt != null) {
@@ -87,7 +88,7 @@ public class UserAO {
             stmt = connection.prepareStatement(sql);
             rs = stmt.executeQuery();
 
-            user = new User(rs.getString(1), rs.getString(2));
+            user = new User(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getString(7));
         } catch(SQLException e ){
             throw new DataAccessException("Error finding User");
         } finally {

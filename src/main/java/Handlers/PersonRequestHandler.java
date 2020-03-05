@@ -2,6 +2,7 @@ package Handlers;
 
 import DataAccess.DataAccessException;
 import DataAccess.DataBase;
+import Model.Person;
 import RequestResult.PersonResponse;
 import Service.DataService;
 import com.google.gson.Gson;
@@ -14,7 +15,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 
-import static Server.Server.getAuthToken;
+import static Server.Server.*;
 
 public class PersonRequestHandler implements HttpHandler {
     @Override
@@ -25,29 +26,28 @@ public class PersonRequestHandler implements HttpHandler {
                 Headers reqHeaders = exchange.getRequestHeaders();
                 String authToken = reqHeaders.get("Authorization").toString();
                 authToken = authToken.substring(1, authToken.length() - 1);
-                if (!authToken.equals(null)) {
+
+                if (authorized(authToken)) {
                     Gson gson = new Gson();
                     String uri = exchange.getRequestURI().toString();
                     int pos = uri.indexOf('/', 2);
                     String userID = uri.substring(pos + 1);
 
                     DataService ds = new DataService();
-
-                    PersonResponse pr = ds.getPerson(userID);
-
-                    String token = getAuthToken(userID);
+                    PersonResponse pr = new PersonResponse();
                     OutputStream respBody = exchange.getResponseBody();
 
-                     if (pr.isSuccess()) {
-                         if (!token.equals(null) && token.equals(authToken)) {
-                             exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
-                         } else {
-                             pr.setSuccess(false);
-                             pr.setMessage("Requested person does not belong to this user");
-                             exchange.sendResponseHeaders(HttpURLConnection.HTTP_UNAUTHORIZED, 0);
-                         }
+                    if(isRelatedHelper(userID, authToken)){
+                        pr = ds.getPerson(userID);
+                        if (pr.isSuccess()) {
+                            exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
+                        } else {
+                            exchange.sendResponseHeaders(HttpURLConnection.HTTP_NOT_FOUND, 0);
+                        }
                     } else {
-                        exchange.sendResponseHeaders(HttpURLConnection.HTTP_NOT_FOUND, 0);
+                        pr.setSuccess(false);
+                        pr.setMessage("Requested person is not associated to this user");
+                        exchange.sendResponseHeaders(HttpURLConnection.HTTP_UNAUTHORIZED, 0);
                     }
 
                     OutputStreamWriter osw = new OutputStreamWriter(respBody);
