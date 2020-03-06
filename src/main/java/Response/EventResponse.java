@@ -12,7 +12,7 @@ public class EventResponse {
     private String city;
     private String eventType;
     private int year;
-    private String message;
+    private String message = null;
     private boolean success;
 
     public EventResponse(String associatedUsername, String eventID, String personID, float latitude, float longitude, String country, String city, String eventType, int year) {
@@ -29,13 +29,15 @@ public class EventResponse {
     public EventResponse() {}
 
     public void setField(Event event) {
-        this.city = event.getCity();
-        this.country = event.getCountry();
         this.eventID = event.getEventID();
-        this.eventType = event.getEventType();
+        this.associatedUsername = event.getAssociatedUsername();
+        this.personID  = event.getPersonID();
         this.latitude = (float) event.getLatitude();
         this.longitude = (float) event.getLongitude();
-        this.personID  = event.getPersonID();
+        this.country = event.getCountry();
+        this.city = event.getCity();
+        this.eventType = event.getEventType();
+
         this.success = true;
         this.year = event.getYear();
     }

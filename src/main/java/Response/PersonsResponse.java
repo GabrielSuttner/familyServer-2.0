@@ -3,11 +3,28 @@ package Response;
 import Model.Person;
 
 import java.util.List;
+import java.util.Objects;
 
 public class PersonsResponse {
     private List<Person> data;
     private boolean success;
-    private String message;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PersonsResponse that = (PersonsResponse) o;
+        return success == that.success &&
+                Objects.equals(data, that.data) &&
+                Objects.equals(message, that.message);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(data, success, message);
+    }
+
+    private String message = null;
 
     public PersonsResponse() {
 

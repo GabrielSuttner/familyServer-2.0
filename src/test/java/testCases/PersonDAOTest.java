@@ -136,6 +136,26 @@ public class PersonDAOTest {
     }
 
 
+    @Test
+    public void updatePerson() throws DataAccessException {
+        PersonAO pd = null;
+        String newName = "Clonewars";
+
+        try {
+            Connection con = this.db.getPersonConnection();
+            pd = new PersonAO();
+            pd.addPerson(con, this.person);
+            db.closePersonConnection(true);
+            this.person.setFirstName(newName);
+            pd.updatePerson(db.getPersonConnection(), this.person);
+            db.closePersonConnection(true);
+        } catch (DataAccessException e) {
+            db.closePersonConnection(false);
+        }
+        Person newPerson = pd.getPerson(db.getPersonConnection(), this.person.getPersonID());
+        Assertions.assertEquals(newName, newPerson.getFirstName());
+    }
+
 
     /**
      *
@@ -157,6 +177,31 @@ public class PersonDAOTest {
         }
         Assertions.assertEquals(people.size(), 0);
 
+    }
+
+    @Test
+    public void DeletePerson() {
+        PersonAO pa = new PersonAO();
+        List<Person> people = null;
+        try {
+            pa.addPerson(db.getPersonConnection(), person);
+            pa.addPerson(db.getPersonConnection(), diffPers);
+            people = pa.getPersons(db.getPersonConnection());
+
+            this.db.closePersonConnection(true);
+            Assertions.assertEquals(people.size(), 2);
+
+            pa.deletePerson(db.getPersonConnection(), person.getPersonID());
+            pa.deletePerson(db.getPersonConnection(), diffPers.getPersonID());
+            people = pa.getPersons(db.getPersonConnection());
+
+            this.db.closePersonConnection(true);
+            Assertions.assertEquals(people.size(), 0);
+
+
+        } catch (DataAccessException e) {
+            e.printStackTrace();
+        }
     }
 
     @AfterEach

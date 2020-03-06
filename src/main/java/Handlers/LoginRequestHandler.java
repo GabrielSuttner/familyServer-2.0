@@ -2,7 +2,7 @@ package Handlers;
 
 import DataAccess.DataBase;
 import Model.User;
-import RequestResult.LoginRequest;
+import Request.LoginRequest;
 import Response.LoginResponse;
 import Service.LoginService;
 import com.google.gson.Gson;
@@ -34,12 +34,12 @@ public class LoginRequestHandler implements HttpHandler {
                 if(lp.isSuccess()) {
                     exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
                 } else {
-                    exchange.sendResponseHeaders(HttpURLConnection.HTTP_NOT_FOUND, 0);
+                    exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, 0);
                 }
                 osw.close();
                 exchange.close();
             } else {
-                exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_METHOD, 0);
+                exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, 0);
             }
 
         } catch (IOException e){

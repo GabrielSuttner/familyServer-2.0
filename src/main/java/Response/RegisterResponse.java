@@ -4,8 +4,8 @@ public class RegisterResponse {
     private String authToken;
     private String userName;
     private String personID;
-    private boolean success;
     private String message;
+    private boolean success;
 
     public String getAuthToken() {
         return authToken;

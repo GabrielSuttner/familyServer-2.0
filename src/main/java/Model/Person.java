@@ -2,6 +2,7 @@ package Model;
 
 import com.google.gson.annotations.SerializedName;
 
+import javax.swing.plaf.PanelUI;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -11,21 +12,27 @@ import java.util.UUID;
 public class Person {
     @SerializedName("personID")
     private String PersonID;
-    @SerializedName("associatedUsername")
-    private String Username;
-    @SerializedName("firstName")
-    private String FirstName;
-    @SerializedName("lastName")
-    private String LastName;
-    @SerializedName("gender")
-    private String Gender;
-    @SerializedName("fatherID")
-    private String FatherID;
-    @SerializedName("motherID")
-    private String MotherID;
-    @SerializedName("spouseID")
-    private String SpouseID;
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(PersonID, associatedUsername, FirstName, LastName, Gender, FatherID, MotherID, SpouseID);
+    }
+
+    @SerializedName("associatedUsername")
+    private String associatedUsername= null;
+    @SerializedName("firstName")
+    private String FirstName= null;
+    @SerializedName("lastName")
+    private String LastName= null;
+    @SerializedName("gender")
+    private String Gender= null;
+    @SerializedName("fatherID")
+    private String FatherID= null;
+    @SerializedName("motherID")
+    private String MotherID= null;
+    @SerializedName("spouseID")
+    private String SpouseID= null;
+    public Person(){};
 
     @Override
     public boolean equals(Object o) {
@@ -33,7 +40,7 @@ public class Person {
         if (o == null || getClass() != o.getClass()) return false;
         Person person = (Person) o;
         return PersonID.equals(person.PersonID) &&
-                Username.equals(person.Username) &&
+                associatedUsername.equals(person.associatedUsername) &&
                 FirstName.equals(person.FirstName) &&
                 LastName.equals(person.LastName) &&
                 Gender.equals(person.Gender) &&
@@ -42,10 +49,6 @@ public class Person {
                 Objects.equals(SpouseID, person.SpouseID);
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(PersonID, Username, FirstName, LastName, Gender, FatherID, MotherID, SpouseID);
-    }
 
     /**
      *
@@ -56,7 +59,7 @@ public class Person {
      */
     public Person(String userName, String firstName, String lastName, String gender){
         PersonID = UUID.randomUUID().toString();
-        this.Username = userName;
+        this.associatedUsername = userName;
         this.FirstName = firstName;
         this.LastName = lastName;
         this.Gender = gender;
@@ -65,21 +68,21 @@ public class Person {
     /**
      *
      * @param personId
-     * @param userName
+     * @param associatedUsername
      * @param firstName
      * @param lastName
      * @param gender
      */
-    public Person(String personId, String userName, String firstName, String lastName, String gender) {
+    public Person(String personId, String associatedUsername, String firstName, String lastName, String gender) {
         this.PersonID = personId;
-        this.Username = userName;
+        this.associatedUsername = associatedUsername;
         this.FirstName = firstName;
         this.LastName = lastName;
         this.Gender = gender;
     }
-    public Person(String personId, String userName, String firstName, String lastName, String gender, String dad, String mom, String spouse) {
+    public Person(String personId, String associatedUsername, String firstName, String lastName, String gender, String dad, String mom, String spouse) {
         this.PersonID = personId;
-        this.Username = userName;
+        this.associatedUsername = associatedUsername;
         this.FirstName = firstName;
         this.LastName = lastName;
         this.Gender = gender;
@@ -100,13 +103,13 @@ public class Person {
      * @return
      */
     public String getUsername() {
-        return Username;
+        return associatedUsername;
     }
 
     /**
      * @param username
      */
-    public void setUsername(String username) { Username = username; }
+    public void setUsername(String username) { associatedUsername = username; }
 
     /**
      *

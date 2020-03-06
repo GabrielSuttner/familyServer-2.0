@@ -8,8 +8,10 @@ import DataAccess.DataBase;
 import Model.AuthToken;
 import Model.Person;
 import Model.User;
-import RequestResult.RegisterRequest;
+import Request.RegisterRequest;
 import Response.RegisterResponse;
+
+import static Server.Server.util;
 
 public class RegisterService {
     public RegisterResponse register(RegisterRequest r) {
@@ -26,7 +28,6 @@ public class RegisterService {
         AuthToken token = null;
         try {
             person = new Person(r.getUserName(),
-                    r.getPassword(),
                     r.getFirstName(),
                     r.getLastName(),
                     r.getGender());
@@ -50,6 +51,8 @@ public class RegisterService {
             aa.addToken(db.getAuthConnection(), token);
             db.closeAuthConnection(true);
 
+            util.generateDataHelper(person, 4);
+
             response.setSuccess(true);
             response.setAuthToken(token.getTokenID());
             response.setUserName(user.getUserName());
@@ -57,7 +60,7 @@ public class RegisterService {
 
         } catch (DataAccessException e) {
             response.setSuccess(false);
-            response.setMessage(e.getMessage());
+            response.setMessage("error: "+ e.getMessage());
         }
 
 

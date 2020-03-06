@@ -3,6 +3,7 @@ package Handlers;
 import DAO.UserAO;
 import DataAccess.DataAccessException;
 import DataAccess.DataBase;
+import Model.Person;
 import Model.User;
 import Response.PersonResponse;
 import Response.PersonsResponse;
@@ -28,15 +29,16 @@ public class PersonRequestHandler implements HttpHandler {
                 Headers reqHeaders = exchange.getRequestHeaders();
                 String authToken = reqHeaders.get("Authorization").toString();
                 authToken = authToken.substring(1, authToken.length() - 1);
+                Gson gson = new Gson();
+                OutputStream respBody = exchange.getResponseBody();
 
-                if (authorized(authToken)) {
-                    Gson gson = new Gson();
+                if (util.authorized(authToken)) {
                     String uri = exchange.getRequestURI().toString();
                     int pos = uri.indexOf('/', 2);
 
-                    //run the code for /person/ api
+                    String userID;
                     if(uri.length() < 9) {
-                        String userID = getUserIDViaToken(authToken);
+                        userID = util.getUserIDViaToken(authToken);
                         UserAO ua = new UserAO();
                         String personID = null;
 
@@ -54,7 +56,6 @@ public class PersonRequestHandler implements HttpHandler {
                         }
 
                         DataService ds = new DataService();
-                        OutputStream respBody = exchange.getResponseBody();
 
                         PersonsResponse pr = ds.getPeople(personID);
                         if (pr.isSuccess()) {
@@ -67,18 +68,16 @@ public class PersonRequestHandler implements HttpHandler {
                         osw.write(gson.toJson(pr));
 
                         osw.close();
-                        exchange.close();
 
-                        //run code for /person/*
                     } else {
-                        String userID = uri.substring(pos + 1);
+                        String personID = uri.substring(pos + 1);
 
                         DataService ds = new DataService();
                         PersonResponse pr = new PersonResponse();
-                        OutputStream respBody = exchange.getResponseBody();
+                        String id = util.getUserIDViaToken(authToken);
+                        if (util.isAssociated(personID, id)) {
 
-                        if (isRelatedHelper(userID, authToken)) {
-                            pr = ds.getPerson(userID);
+                            pr = ds.getPerson(personID);
                             if (pr.isSuccess()) {
                                 exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
                             } else {
@@ -86,18 +85,25 @@ public class PersonRequestHandler implements HttpHandler {
                             }
                         } else {
                             pr.setSuccess(false);
-                            pr.setMessage("Requested person is not associated to this user");
-                            exchange.sendResponseHeaders(HttpURLConnection.HTTP_UNAUTHORIZED, 0);
+                            pr.setMessage("error: Requested person does not belong to this user");
+                            exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, 0);
                         }
 
                         OutputStreamWriter osw = new OutputStreamWriter(respBody);
                         osw.write(gson.toJson(pr));
 
                         osw.close();
-                        exchange.close();
-                    }
+                    } exchange.close();
                 } else {
-                    exchange.sendResponseHeaders(HttpURLConnection.HTTP_UNAUTHORIZED, 0);
+                    exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, 0);
+                    OutputStreamWriter osw = new OutputStreamWriter(respBody);
+                    PersonResponse pr = new PersonResponse();
+                    pr.setSuccess(false);
+                    pr.setMessage("error: Requested person does not belong to this user");
+                    osw.write(gson.toJson(pr));
+
+                    osw.close();
+                    exchange.close();
                 }
             } else {
                 exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, 0);

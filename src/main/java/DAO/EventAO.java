@@ -38,7 +38,7 @@ public class EventAO {
             stmt.setInt(9, event.getYear());
 
             if(stmt.executeUpdate() == 1) {
-                System.out.println("Added Event: " + event.getEventID());
+                System.out.println("Added Event " + event.toString() );
             } else {
                 System.out.println("Failed to add Event: " + event.getEventID());
             }
@@ -47,6 +47,28 @@ public class EventAO {
         } catch (SQLException e) {
             e.printStackTrace();
             throw new DataAccessException("Error adding event " + event.getEventID());
+        }
+    }
+
+    public void deletePersonByAssociatedUserName(Connection connection, String associatedUserName) throws DataAccessException {
+        PreparedStatement stmt = null;
+        try {
+            String sql = "DELETE FROM events WHERE Username = '" + associatedUserName +"';";
+            stmt = connection.prepareStatement(sql);
+
+            stmt.executeUpdate();
+            System.out.printf("Deleted %s.\n", associatedUserName);
+        } catch(SQLException e) {
+            throw new DataAccessException("Failed to delete " + associatedUserName);
+
+        } finally {
+            try {
+                if (stmt != null) {
+                    stmt.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -170,7 +192,7 @@ public class EventAO {
             while(rs.next()) {
 
                 events.add( new Event(rs.getString(1), rs.getString(2),
-                        rs.getString(3), rs.getDouble(4), rs.getDouble(5),
+                        rs.getString(3), rs.getFloat(4), rs.getFloat(5),
                         rs.getString(6), rs.getString(7), rs.getString(8),
                         rs.getInt(9)));
             }
@@ -207,7 +229,7 @@ public class EventAO {
             while(rs.next()) {
 
                 events.add( new Event(rs.getString(1), rs.getString(2),
-                        rs.getString(3), rs.getDouble(4), rs.getDouble(5),
+                        rs.getString(3), rs.getFloat(4), rs.getFloat(5),
                         rs.getString(6), rs.getString(7), rs.getString(8),
                         rs.getInt(9)));
             }
@@ -247,7 +269,7 @@ public class EventAO {
             rs = stmt.executeQuery();
 
             newEvent = new Event(rs.getString(1), rs.getString(2),
-                    rs.getString(3), rs.getDouble(4), rs.getDouble(5),
+                    rs.getString(3), rs.getFloat(4), rs.getFloat(5),
                     rs.getString(6), rs.getString(7), rs.getString(8),
                     rs.getInt(9));
 
@@ -271,4 +293,40 @@ public class EventAO {
         return newEvent;
     }
 
+    public List<Event> getUserEventsByUserName(Connection connection, String s) throws DataAccessException {
+        List<Event> events = new ArrayList<>();
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+
+        try {
+            String sql = "SELECT Event_ID, Username, Person_ID, Latitude," +
+                    " Longitude, Country, City, Event_Type, Year FROM events " +
+                    "Where Username = '" + s + "';";
+            stmt = connection.prepareStatement(sql);
+            rs = stmt.executeQuery();
+            while(rs.next()) {
+
+                events.add( new Event(rs.getString(1), rs.getString(2),
+                        rs.getString(3), rs.getFloat(4), rs.getFloat(5),
+                        rs.getString(6), rs.getString(7), rs.getString(8),
+                        rs.getInt(9)));
+            }
+        } catch(SQLException e){
+            e.printStackTrace();
+            throw new DataAccessException("Error retreiving all data from Events table");
+        }finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (stmt != null) {
+                    stmt.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return events;
+    }
 }

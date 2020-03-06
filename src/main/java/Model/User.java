@@ -6,13 +6,13 @@ import java.util.Objects;
 
 public class User {
 
-    private String userName;
-    private String password;
-    private String email;
-    private String firstName;
-    private String lastName;
-    private String gender;
-    private String personID;
+    private String userName= null;
+    private String password= null;
+    private String email= null;
+    private String firstName= null;
+    private String lastName= null;
+    private String gender= null;
+    private String personID= null;
 
     public User(String userName, String password, String email, String firstName, String lastName, String gender, String personID) {
         this.userName = userName;

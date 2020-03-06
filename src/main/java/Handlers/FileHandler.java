@@ -14,7 +14,6 @@ import java.nio.file.Path;
 public class FileHandler implements HttpHandler {
     @Override
     public void handle(HttpExchange exchange) {
-        System.out.println("entered fileHandler");
         try {
             if(exchange.getRequestMethod().toUpperCase().equals("GET")){
                 String path = exchange.getRequestURI().toString();
@@ -23,6 +22,7 @@ public class FileHandler implements HttpHandler {
                 } else {
                     path = "web" + path;
                 }
+
                 //check to see if it wants index.
                 String finalPath = finalizePath(path);
                 System.out.println(finalPath);

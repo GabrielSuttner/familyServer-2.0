@@ -1,6 +1,6 @@
 package Handlers;
 import Model.User;
-import RequestResult.RegisterRequest;
+import Request.RegisterRequest;
 import Response.RegisterResponse;
 import Service.RegisterService;
 import com.google.gson.Gson;
@@ -38,12 +38,12 @@ public class RegisterRequestHandler implements HttpHandler {
                 if(lp.isSuccess()) {
                     exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
                 } else {
-                    exchange.sendResponseHeaders(HttpURLConnection.HTTP_NOT_FOUND, 0);
+                    exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, 0);
                 }
                 osw.close();
                 exchange.close();
             } else {
-                exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_METHOD, 0);
+                exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, 0);
             }
         } catch (IOException e) {
             System.out.println("Error: Couldn't establish connection to userDatabase.");

@@ -1,4 +1,4 @@
-package RequestResult;
+package Request;
 
 public class PersonRequest {
     private String associatedUsername;

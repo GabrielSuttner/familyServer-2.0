@@ -39,7 +39,7 @@ public class PersonAO {
             stmt.setString(8, person.getSpouseID());
 
             if(stmt.executeUpdate() == 1) {
-                System.out.println("Added Person: " +person.getFirstName());
+                System.out.println("Added Person: " + person.getFirstName() + " " + person.getLastName());
             } else {
                 System.out.println("Failed to add Person: " + person.getPersonID());
             }
@@ -82,7 +82,7 @@ public class PersonAO {
                 stmt.setString(8, person.getSpouseID());
 
                 if (stmt.executeUpdate() == 1) {
-                    System.out.println("Added Person: " + person.getFirstName());
+                    System.out.println("Added Person: " + person.getFirstName() + " " + person.getLastName());
                 } else {
                     System.out.println("Failed to add Person: " + person.getPersonID());
                 }
@@ -131,19 +131,45 @@ public class PersonAO {
         }
     }
 
+    public void deletePersonByAssociated(Connection connection, String associatedUsername) throws DataAccessException {
+        PreparedStatement stmt = null;
+        try {
+            String sql = "DELETE from persons WHERE Username = '" + associatedUsername +"';";
+            stmt = connection.prepareStatement(sql);
+
+            stmt.executeUpdate();
+            System.out.printf("Deleted %s.\n", associatedUsername);
+        } catch(SQLException e) {
+            throw new DataAccessException("Failed to delete " + associatedUsername);
+
+        } finally {
+            try {
+                if (stmt != null) {
+                    stmt.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
+
     /**
      *
      * @param connection
      * @param person
      * @throws SQLException
      */
-    public void updatePerson(Connection connection, Person person) throws SQLException, DataAccessException {
+    public void updatePerson(Connection connection, Person person) throws DataAccessException {
         PreparedStatement stmt = null;
         try{
-            String sql = "Update person" +
-                    "set Username = ?, First_Name = ?, Last_Name = ?," +
-                    "Gender = ?, Father_ID = ?, Mother_ID = ?, Spouse_ID = ?";
+            String sql = "UPDATE persons" +
+                    " SET Person_ID = ?, Username = ?, First_Name = ?, Last_Name = ?," +
+                    " Gender = ?, Father_ID = ?, Mother_ID = ?, Spouse_ID = ?" +
+                    " WHERE Person_ID = '" + person.getPersonID() + "';";
             stmt = connection.prepareStatement(sql);
+            stmt.setString(1, person.getPersonID());
             stmt.setString(2, person.getUsername());
             stmt.setString(3, person.getFirstName());
             stmt.setString(4, person.getLastName());
@@ -153,14 +179,18 @@ public class PersonAO {
             stmt.setString(8, person.getSpouseID());
 
             stmt.executeUpdate();
-            System.out.println("Updated Person: " + person.getFirstName());
+            System.out.println("Updated Person: " + person.getFirstName() + " " + person.getLastName());
 
         } catch (SQLException e){
             System.out.println("Failed to update Person: " + person.getPersonID());
             throw new DataAccessException("Error updating " + person.getFirstName());
         } finally {
             if(stmt!= null) {
-                stmt.close();
+                try {
+                    stmt.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }

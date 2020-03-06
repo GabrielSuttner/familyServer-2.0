@@ -1,4 +1,4 @@
-package RequestResult;
+package Request;
 
 import Model.Event;
 import Model.Person;
@@ -11,6 +11,10 @@ public class LoadRequest {
         this.users = users;
         this.persons = persons;
         this.events = events;
+    }
+
+    public LoadRequest() {
+
     }
 
     public List<User> getUsers() {

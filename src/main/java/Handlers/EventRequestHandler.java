@@ -34,13 +34,15 @@ public class EventRequestHandler implements HttpHandler {
 
                 EventResponse er = new EventResponse();
                 OutputStream respBody = exchange.getResponseBody();
-                if (authorized(authToken)) {
-                    Gson gson = new Gson();
+                Gson gson = new Gson();
+
+                if (util.authorized(authToken)) {
+
                     String uri = exchange.getRequestURI().toString();
                     int pos = uri.indexOf('/', 2);
 
                     if(uri.length() < 8) {
-                            String userID = getUserIDViaToken(authToken);
+                            String userID = util.getUserIDViaToken(authToken);
                             UserAO ua = new UserAO();
                             String personID = null;
 
@@ -62,14 +64,13 @@ public class EventRequestHandler implements HttpHandler {
                             if (pr.isSuccess()) {
                                 exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
                             } else {
-                                exchange.sendResponseHeaders(HttpURLConnection.HTTP_NOT_FOUND, 0);
+                                exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, 0);
                             }
 
                             OutputStreamWriter osw = new OutputStreamWriter(respBody);
                             osw.write(gson.toJson(pr));
 
                             osw.close();
-                            exchange.close();
 
                     } else {
 
@@ -88,10 +89,10 @@ public class EventRequestHandler implements HttpHandler {
                             } catch (DataAccessException ex) {
                                 ex.printStackTrace();
                             }
-                            er.setMessage("User not associated with event");
+                            er.setMessage("error: User not associated with event");
                             er.setSuccess(false);
                         }
-                        if (isRelatedHelper(event.getPersonID(), authToken)) {
+                        if (util.isRelatedHelper(event.getPersonID(), authToken)) {
                             er = ds.getEvent(eventID);
                             if (er.isSuccess()) {
                                 exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
@@ -100,19 +101,26 @@ public class EventRequestHandler implements HttpHandler {
                             }
                         } else {
                             er.setSuccess(false);
-                            er.setMessage("Requested person is not associated to this user");
-                            exchange.sendResponseHeaders(HttpURLConnection.HTTP_UNAUTHORIZED, 0);
+                            er.setMessage("error: Requested event does not belong to this user");
+                            exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, 0);
                         }
-
                         OutputStreamWriter osw = new OutputStreamWriter(respBody);
                         osw.write(gson.toJson(er));
 
                         osw.close();
-                        exchange.close();
+
                     }
                 } else {
-                    exchange.sendResponseHeaders(HttpURLConnection.HTTP_UNAUTHORIZED, 0);
+                    exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, 0);
+
+                    EventsResponse pr = new EventsResponse();
+                    pr.setSuccess(false);
+                    pr.setMessage("error: Requested event does not belong to this user");
+                    OutputStreamWriter osw = new OutputStreamWriter(respBody);
+                    osw.write(gson.toJson(pr));
+                    osw.close();
                 }
+
             } else {
                 exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, 0);
             }
@@ -126,5 +134,7 @@ public class EventRequestHandler implements HttpHandler {
             }
             e.printStackTrace();
         }
+        exchange.close();
     }
+
 }

@@ -5,7 +5,7 @@ import Model.ListContainer;
 import Model.Person;
 import Model.User;
 
-import RequestResult.LoadRequest;
+import Request.LoadRequest;
 import Response.LoadResponse;
 import Service.LoadService;
 import com.google.gson.Gson;
@@ -33,7 +33,10 @@ public class LoadRequestHandler implements HttpHandler {
                 persons = container.getPersons();
                 events = container.getEvents();
 
-                LoadRequest request = new LoadRequest(users, persons, events);
+                LoadRequest request = new LoadRequest();
+                request.setEvents(events);
+                request.setPersons(persons);
+                request.setUsers(users);
                 LoadService loadService = new LoadService();
                 LoadResponse response = loadService.loadData(request);
 

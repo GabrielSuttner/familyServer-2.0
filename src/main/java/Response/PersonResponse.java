@@ -12,6 +12,7 @@ public class PersonResponse {
     private String motherID;
     private String spouseID;
     private boolean success;
+    private String message = null;
 
     public String getMessage() {
         return message;
@@ -21,7 +22,6 @@ public class PersonResponse {
         this.message = message;
     }
 
-    private String message;
 
     public String getAssociatedUsername() {
         return associatedUsername;
@@ -99,10 +99,11 @@ public class PersonResponse {
         this.personID = p.getPersonID();
         this.associatedUsername = p.getUsername();
         this.firstName = p.getFirstName();
+        this.lastName = p.getLastName();
+        this.gender = p.getGender();
         this.fatherID = p.getFatherID();
         this.motherID = p.getMotherID();
         this.spouseID = p.getSpouseID();
-        this.gender = p.getGender();
         this.success = true;
     }
 }

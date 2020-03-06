@@ -1,6 +1,9 @@
 package DataAccess;
 
+import Model.User;
+
 import java.sql.*;
+import java.util.List;
 
 public class DataBase {
     private Connection personConnection = null;
@@ -67,7 +70,7 @@ public class DataBase {
         }
         try {
             this.personConnection = DriverManager.getConnection(url);
-            this.personConnection.setAutoCommit(false);
+            this.personConnection.setAutoCommit(true);
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -84,7 +87,7 @@ public class DataBase {
 
         try {
             this.eventConnection = DriverManager.getConnection(url);
-            this.eventConnection.setAutoCommit(false);
+            this.eventConnection.setAutoCommit(true);
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -101,7 +104,7 @@ public class DataBase {
 
         try {
             this.userConnection = DriverManager.getConnection(url);
-            this.userConnection.setAutoCommit(false);
+            this.userConnection.setAutoCommit(true);
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -118,7 +121,7 @@ public class DataBase {
 
         try {
             this.authConnection = DriverManager.getConnection(url);
-            this.authConnection.setAutoCommit(false);
+            this.authConnection.setAutoCommit(true);
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -143,12 +146,8 @@ public class DataBase {
      * @throws DataAccessException
      */
     public void closePersonConnection(boolean commit) throws DataAccessException {
+        if(this.personConnection == null) return;
         try {
-            if (commit) {
-                this.personConnection.commit();
-            } else {
-                this.personConnection.rollback();
-            }
             this.personConnection.close();
             this.personConnection = null;
         } catch (SQLException e) {
@@ -163,12 +162,8 @@ public class DataBase {
      * @throws DataAccessException
      */
     public void closeEventConnection(boolean commit) throws DataAccessException {
+        if(eventConnection == null) return;
         try {
-            if (commit) {
-                this.eventConnection.commit();
-            } else {
-                this.eventConnection.rollback();
-            }
             this.eventConnection.close();
             this.eventConnection = null;
         } catch (SQLException e) {
@@ -183,12 +178,8 @@ public class DataBase {
      * @throws DataAccessException
      */
     public void closeAuthConnection(boolean commit) throws DataAccessException {
+        if(this.authConnection == null) return;
         try {
-            if (commit) {
-                this.authConnection.commit();
-            } else {
-                this.authConnection.rollback();
-            }
             this.authConnection.close();
             this.authConnection = null;
         } catch (SQLException e) {
@@ -203,12 +194,8 @@ public class DataBase {
      * @throws DataAccessException
      */
     public void closeUserConnection(boolean commit) throws DataAccessException {
+        if(this.userConnection == null) return;
         try {
-            if (commit) {
-                this.userConnection.commit();
-            } else {
-                this.userConnection.rollback();
-            }
             this.userConnection.close();
             this.userConnection = null;
         } catch (SQLException e) {
@@ -229,6 +216,7 @@ public class DataBase {
     }
 
     public void clearUserTables() throws DataAccessException {
+
         if(this.userConnection == null) {
             openUserConnection();
         }
@@ -251,7 +239,7 @@ public class DataBase {
             openPersonConnection();
         }
         try (Statement stmt = this.personConnection.createStatement()){
-            String sql = "DELETE FROM persons;";
+            String sql = "DELETE FROM persons";
             stmt.executeUpdate(sql);
             closePersonConnection(true);
         } catch (SQLException e) {

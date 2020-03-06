@@ -4,22 +4,22 @@ import DAO.EventAO;
 import DAO.PersonAO;
 import DataAccess.DataAccessException;
 import DataAccess.DataBase;
+import DataGenerator.Utility;
 import Model.Event;
 import Model.Person;
 import Response.EventsResponse;
 import Response.PersonResponse;
 import Response.PersonsResponse;
 import Response.EventResponse;
+import jdk.jshell.execution.Util;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
 
-import static Server.Server.getUserIDSet;
-import static Server.Server.isRelated;
 
 public class DataService{
+    Utility util = new Utility();
     public PersonResponse getPerson(String personID) {
         Person person = null;
         DataBase db = new DataBase();
@@ -50,9 +50,10 @@ public class DataService{
         PersonAO pa = new PersonAO();
         try {
 
-            isRelated(pa.getPerson(db.getPersonConnection(), personID), null);
+            util.isRelated(pa.getPerson(db.getPersonConnection(), personID), null);
             db.closePersonConnection(true);
-            Set<String> ids = getUserIDSet();
+            Set<String> ids = util.getPersonIDSet();
+            ids.add(personID);
 
             for(String s : ids){
                 person = pa.getPerson(db.getPersonConnection(), s);
@@ -100,25 +101,12 @@ public class DataService{
 
     public EventsResponse getEvents(String personID) {
         EventsResponse response = new EventsResponse();
-        List<Event> events = new ArrayList<>();
-        List<Event> tempEvents = null;
+        List<Event> events;
         DataBase db = new DataBase();
-        PersonAO pa = new PersonAO();
         EventAO ea = new EventAO();
-
+        Person p = util.getPerson(personID);
         try {
-
-            isRelated(pa.getPerson(db.getPersonConnection(), personID), null);
-            db.closePersonConnection(true);
-            Set<String> ids = getUserIDSet();
-
-            for(String s : ids){
-                tempEvents = ea.getUserEvents(db.getEventConnection(), s);
-                db.closeEventConnection(true);
-                for(Event e : tempEvents) {
-                    events.add(e);
-                }
-            }
+            events = ea.getUserEventsByUserName(db.getEventConnection(), p.getUsername());
 
             response.setData(events);
             response.setSuccess(true);

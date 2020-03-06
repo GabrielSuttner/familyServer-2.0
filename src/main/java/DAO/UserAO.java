@@ -75,8 +75,14 @@ public class UserAO {
         }
     }
 
-
-    public User getUser(Connection connection, String userID) throws DataAccessException {
+    /**
+     * Returns the user from the username
+     * @param connection
+     * @param userName
+     * @return
+     * @throws DataAccessException
+     */
+    public User getUser(Connection connection, String userName) throws DataAccessException {
         User newU = null;
         PreparedStatement stmt = null;
         ResultSet rs = null;
@@ -84,7 +90,7 @@ public class UserAO {
 
         try {
             String sql = "SELECT Username, Password, Email, First_Name, Last_Name, Gender, Person_ID  FROM users " +
-                    "WHERE username = '" + userID + "';";
+                    "WHERE username = '" + userName + "';";
             stmt = connection.prepareStatement(sql);
             rs = stmt.executeQuery();
 

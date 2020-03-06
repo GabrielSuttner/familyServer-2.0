@@ -6,7 +6,7 @@ import java.util.List;
 
 public class EventsResponse {
     private List<Event> data;
-    private String message;
+    private String message = null;
     private boolean success;
 
     public String getMessage() {
@@ -32,5 +32,4 @@ public class EventsResponse {
     public void setSuccess(boolean success) {
         this.success = success;
     }
-
 }

@@ -8,13 +8,19 @@ import DataAccess.DataBase;
 import Model.Event;
 import Model.Person;
 import Model.User;
-import RequestResult.LoadRequest;
+import Request.LoadRequest;
 import Response.LoadResponse;
 
 import java.util.List;
 
 public class LoadService {
     DataBase db = new DataBase();
+
+    /**
+     *
+     * @param request
+     * @return
+     */
     public LoadResponse loadData(LoadRequest request) {
         List<User> users = request.getUsers();
         List<Event> events = request.getEvents();

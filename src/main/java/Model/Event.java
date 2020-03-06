@@ -7,21 +7,36 @@ import java.util.UUID;
 
 public class Event {
     @SerializedName("eventID")
-    private String EventID;
+    private String EventID = null;
     @SerializedName("associatedUsername")
-    private String AssociatedUsername;
+    private String AssociatedUsername = null;
     @SerializedName("personID")
-    private String PersonID;
+    private String PersonID = null;
     @SerializedName("latitude")
-    private double Latitude;
+    private float Latitude;
     @SerializedName("longitude")
-    private double Longitude;
+    private float Longitude ;
     @SerializedName("country")
-    private String Country;
+    private String Country= null;
     @SerializedName("city")
-    private String City;
+    private String City= null;
     @SerializedName("eventType")
-    private String EventType;
+    private String EventType= null;
+
+    @Override
+    public String toString() {
+        return "Event{" +
+                "AssociatedUsername='" + AssociatedUsername + '\'' +
+                ", PersonID='" + PersonID + '\'' +
+                ", Latitude=" + Latitude +
+                ", Longitude=" + Longitude +
+                ", Country='" + Country + '\'' +
+                ", City='" + City + '\'' +
+                ", EventType='" + EventType + '\'' +
+                ", Year=" + Year +
+                '}';
+    }
+
     @SerializedName("year")
     private int Year;
 
@@ -58,7 +73,7 @@ public class Event {
      * @param eventType
      * @param year
      */
-    public Event(String associatedUsername, String personID, double latitude, double longitude, String country, String city, String eventType, int year) {
+    public Event(String associatedUsername, String personID, float latitude, float longitude, String country, String city, String eventType, int year) {
 
         this.EventID = UUID.randomUUID().toString();
         this.AssociatedUsername = associatedUsername;
@@ -83,7 +98,7 @@ public class Event {
      * @param eventType
      * @param year
      */
-    public Event(String eventID, String associatedUsername, String personID, double latitude, double longitude, String country, String city, String eventType, int year) {
+    public Event(String eventID, String associatedUsername, String personID, float latitude, float longitude, String country, String city, String eventType, int year) {
         this.EventID = eventID;
         this.AssociatedUsername = associatedUsername;
         this.PersonID = personID;
