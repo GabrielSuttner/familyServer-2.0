@@ -14,12 +14,11 @@ import java.net.HttpURLConnection;
 
 public class LoginRequestHandler implements HttpHandler {
     @Override
-    public void handle(HttpExchange exchange) throws IOException {
-        DataBase db = new DataBase();
+    public void handle(HttpExchange exchange){
         try {
             if(exchange.getRequestMethod().toUpperCase().equals("POST")) {
-                User user = null;
-                Reader reader = null;
+                User user;
+                Reader reader;
                 reader = new InputStreamReader(exchange.getRequestBody());
 
                 Gson gson = new Gson();
