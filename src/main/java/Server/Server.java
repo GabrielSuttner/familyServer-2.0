@@ -26,7 +26,7 @@ public class Server  {
         registerHandlers(server);
         server.start();
         InetAddress inetAddress = InetAddress.getLocalHost();
-        System.out.println("FamilyMapServer listening on "+inetAddress.toString() +":" +port);
+        System.out.println("FamilyMapServer listening on "+ inetAddress.toString() +":" +port);
     }
 
     private static void registerHandlers(HttpServer server) {

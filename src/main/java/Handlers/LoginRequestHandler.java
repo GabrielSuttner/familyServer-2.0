@@ -14,7 +14,11 @@ import java.net.HttpURLConnection;
 
 public class LoginRequestHandler implements HttpHandler {
     @Override
+<<<<<<< HEAD
     public void handle(HttpExchange exchange) {
+=======
+    public void handle(HttpExchange exchange){
+>>>>>>> d0259de0f721c0d6a1e26c1f75a8d80c8b28c4a3
         try {
             if(exchange.getRequestMethod().toUpperCase().equals("POST")) {
                 User user;
