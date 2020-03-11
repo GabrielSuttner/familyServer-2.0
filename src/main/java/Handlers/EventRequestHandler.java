@@ -8,7 +8,6 @@ import Model.Event;
 import Model.User;
 import Response.EventResponse;
 import Response.EventsResponse;
-import Response.PersonsResponse;
 import Service.DataService;
 import com.google.gson.Gson;
 import com.sun.net.httpserver.Headers;
@@ -35,7 +34,7 @@ public class EventRequestHandler implements HttpHandler {
                 EventResponse er = new EventResponse();
                 OutputStream respBody = exchange.getResponseBody();
                 Gson gson = new Gson();
-
+                //validate token
                 if (util.authorized(authToken)) {
 
                     String uri = exchange.getRequestURI().toString();
@@ -48,12 +47,12 @@ public class EventRequestHandler implements HttpHandler {
 
                             try {
                                 User user = ua.getUser(db.getUserConnection(), userID);
-                                db.closeUserConnection(true);
+                                db.closeUserConnection();
                                 personID = user.getPersonID();
                             } catch (DataAccessException e) {
                                 e.printStackTrace();
                                 try {
-                                    db.closeUserConnection(true);
+                                    db.closeUserConnection();
                                 } catch (DataAccessException ex) {
                                     ex.printStackTrace();
                                 }
@@ -81,11 +80,11 @@ public class EventRequestHandler implements HttpHandler {
                         Event event = null;
                         try {
                             event = ea.getEvent(db.getEventConnection(), eventID);
-                            db.closeEventConnection(true);
+                            db.closeEventConnection();
                         } catch (DataAccessException e) {
                             e.printStackTrace();
                             try {
-                                db.closeEventConnection(false);
+                                db.closeEventConnection();
                             } catch (DataAccessException ex) {
                                 ex.printStackTrace();
                             }
@@ -128,7 +127,7 @@ public class EventRequestHandler implements HttpHandler {
             exchange.sendResponseHeaders(HttpURLConnection.HTTP_SERVER_ERROR, 0);
             exchange.getResponseBody().close();
             try {
-                db.closeAllConnections(false);
+                db.closeAllConnections();
             } catch (DataAccessException ex) {
                 ex.printStackTrace();
             }

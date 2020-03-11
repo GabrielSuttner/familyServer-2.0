@@ -35,9 +35,9 @@ public class PersonDAOTest {
             Connection con = this.db.getPersonConnection();
             pd = new PersonAO();
             pd.addPerson(con, this.person);
-            db.closePersonConnection(true);
+            db.closePersonConnection();
         } catch (DataAccessException e) {
-            db.closePersonConnection(false);
+            db.closePersonConnection();
         }
         Person newPerson = pd.getPerson(db.getPersonConnection(), this.person.getPersonID());
         Assertions.assertEquals(newPerson, this.person);
@@ -55,10 +55,10 @@ public class PersonDAOTest {
             pa = new PersonAO();
             pa.addPersons(db.getPersonConnection(), persons);
             personList = pa.getPersons(db.getPersonConnection());
-            db.closePersonConnection(true);
+            db.closePersonConnection();
         } catch (DataAccessException e) {
             e.printStackTrace();
-            db.closePersonConnection(false);
+            db.closePersonConnection();
         }
         Assertions.assertEquals(personList, persons);
     }
@@ -69,11 +69,11 @@ public class PersonDAOTest {
         try {
             pd = new PersonAO();
             pd.addPerson(this.db.getPersonConnection(), this.person);
-            this.db.closePersonConnection(true);
+            this.db.closePersonConnection();
         } catch (DataAccessException e) {
-            db.closePersonConnection(false);
+            db.closePersonConnection();
         }
-        //successfully addded a person
+        //successfully added a person
         boolean failed = false;
 
         try {
@@ -82,7 +82,7 @@ public class PersonDAOTest {
             pd.addPerson(con, this.person);
         } catch (DataAccessException e) {
             //error gettign the person because its a duplicate
-            db.closePersonConnection(false);
+            db.closePersonConnection();
             failed = true;
         }
 
@@ -95,9 +95,9 @@ public class PersonDAOTest {
         try {
             pd = new PersonAO();
             pd.addPerson(this.db.getPersonConnection(), this.person);
-            this.db.closePersonConnection(true);
+            this.db.closePersonConnection();
         } catch (DataAccessException  e) {
-            db.closePersonConnection(false);
+            db.closePersonConnection();
         }
 
         String personID = this.person.getPersonID();
@@ -120,7 +120,7 @@ public class PersonDAOTest {
             pd = new PersonAO();
             pd.addPerson(con, this.person);
         } catch (DataAccessException  e) {
-            db.closePersonConnection(false);
+            db.closePersonConnection();
         }
         String personID = this.person.getPersonID();
         Person newPerson = null;
@@ -145,12 +145,12 @@ public class PersonDAOTest {
             Connection con = this.db.getPersonConnection();
             pd = new PersonAO();
             pd.addPerson(con, this.person);
-            db.closePersonConnection(true);
+            db.closePersonConnection();
             this.person.setFirstName(newName);
             pd.updatePerson(db.getPersonConnection(), this.person);
-            db.closePersonConnection(true);
+            db.closePersonConnection();
         } catch (DataAccessException e) {
-            db.closePersonConnection(false);
+            db.closePersonConnection();
         }
         Person newPerson = pd.getPerson(db.getPersonConnection(), this.person.getPersonID());
         Assertions.assertEquals(newName, newPerson.getFirstName());
@@ -169,7 +169,7 @@ public class PersonDAOTest {
             pa.addPerson(db.getPersonConnection(), diffPers);
             this.db.clearPersonsTable();
             people = pa.getPersons(db.getPersonConnection());
-            this.db.closePersonConnection(false);
+            this.db.closePersonConnection();
 
 
         } catch (DataAccessException e) {
@@ -188,14 +188,14 @@ public class PersonDAOTest {
             pa.addPerson(db.getPersonConnection(), diffPers);
             people = pa.getPersons(db.getPersonConnection());
 
-            this.db.closePersonConnection(true);
+            this.db.closePersonConnection();
             Assertions.assertEquals(people.size(), 2);
 
             pa.deletePerson(db.getPersonConnection(), person.getPersonID());
             pa.deletePerson(db.getPersonConnection(), diffPers.getPersonID());
             people = pa.getPersons(db.getPersonConnection());
 
-            this.db.closePersonConnection(true);
+            this.db.closePersonConnection();
             Assertions.assertEquals(people.size(), 0);
 
 

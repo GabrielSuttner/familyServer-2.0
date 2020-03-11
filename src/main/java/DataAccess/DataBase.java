@@ -12,7 +12,7 @@ public class DataBase {
     private Connection authConnection = null;
 
     /**
-     *
+     * return PersonConnection, if null, new connection is opened.
      * @return
      * @throws DataAccessException
      */
@@ -24,7 +24,7 @@ public class DataBase {
     }
 
     /**
-     *
+     * return eventConnection, if null, new connection is opened.
      * @return
      * @throws DataAccessException
      */
@@ -36,7 +36,7 @@ public class DataBase {
     }
 
     /**
-     *
+     * return userConnection, if null, new connection is opened.
      * @return
      * @throws DataAccessException
      */
@@ -48,7 +48,7 @@ public class DataBase {
     }
 
     /**
-     *
+     * return authConnection, if null, new connection is opened.
      * @return
      * @throws DataAccessException
      */
@@ -133,19 +133,19 @@ public class DataBase {
      *
      * @throws DataAccessException
      */
-    public void closeAllConnections(boolean t) throws DataAccessException {
-        closePersonConnection(t);
-        closeAuthConnection(t);
-        closeEventConnection(t);
-        closeUserConnection(t);
+    public void closeAllConnections() throws DataAccessException {
+        closePersonConnection();
+        closeAuthConnection();
+        closeEventConnection();
+        closeUserConnection();
     }
 
     /**
      *
-     * @param commit
+     *
      * @throws DataAccessException
      */
-    public void closePersonConnection(boolean commit) throws DataAccessException {
+    public void closePersonConnection() throws DataAccessException {
         if(this.personConnection == null) return;
         try {
             this.personConnection.close();
@@ -158,10 +158,10 @@ public class DataBase {
 
     /**
      *
-     * @param commit
+     *
      * @throws DataAccessException
      */
-    public void closeEventConnection(boolean commit) throws DataAccessException {
+    public void closeEventConnection( ) throws DataAccessException {
         if(eventConnection == null) return;
         try {
             this.eventConnection.close();
@@ -174,10 +174,10 @@ public class DataBase {
 
     /**
      *
-     * @param commit
+     *
      * @throws DataAccessException
      */
-    public void closeAuthConnection(boolean commit) throws DataAccessException {
+    public void closeAuthConnection( ) throws DataAccessException {
         if(this.authConnection == null) return;
         try {
             this.authConnection.close();
@@ -190,10 +190,10 @@ public class DataBase {
 
     /**
      *
-     * @param commit
+     * @param
      * @throws DataAccessException
      */
-    public void closeUserConnection(boolean commit) throws DataAccessException {
+    public void closeUserConnection() throws DataAccessException {
         if(this.userConnection == null) return;
         try {
             this.userConnection.close();
@@ -215,17 +215,20 @@ public class DataBase {
        clearUserTables();
     }
 
+    /**
+     *
+     * @throws DataAccessException
+     */
     public void clearUserTables() throws DataAccessException {
-
         if(this.userConnection == null) {
             openUserConnection();
         }
         try (Statement stmt = this.userConnection.createStatement()){
             String sql = "DELETE FROM users;";
             stmt.executeUpdate(sql);
-            closeUserConnection(true);
+            closeUserConnection();
         } catch (SQLException e) {
-            closeUserConnection(false);
+            closeUserConnection();
             throw new DataAccessException("SQL Error encountered while clearing Users tables");
         }
     }
@@ -241,9 +244,9 @@ public class DataBase {
         try (Statement stmt = this.personConnection.createStatement()){
             String sql = "DELETE FROM persons";
             stmt.executeUpdate(sql);
-            closePersonConnection(true);
+            closePersonConnection();
         } catch (SQLException e) {
-            closePersonConnection(false);
+            closePersonConnection();
             throw new DataAccessException("SQL Error encountered while clearing persons tables");
         }
     }
@@ -259,9 +262,9 @@ public class DataBase {
         try (Statement stmt = eventConnection.createStatement()){
             String sql = "DELETE FROM events;";
             stmt.executeUpdate(sql);
-            closeEventConnection(true);
+            closeEventConnection();
         } catch (SQLException e) {
-            closeEventConnection(false);
+            closeEventConnection();
             throw new DataAccessException("SQL Error encountered while clearing events tables");
         }
     }
@@ -279,9 +282,9 @@ public class DataBase {
         try (Statement stmt = authConnection.createStatement()){
             String sql = "DELETE FROM authTokens;";
             stmt.executeUpdate(sql);
-            closeAuthConnection(true);
+            closeAuthConnection();
         } catch (SQLException e) {
-            closeAuthConnection(false);
+            closeAuthConnection();
             throw new DataAccessException("SQL Error encountered while clearing authTokens tables");
         }
     }
@@ -291,7 +294,5 @@ public class DataBase {
      * @throws SQLException
      */
     //When database is created, it goes through and creates its own pre filled database.
-    public DataBase() {
-    }
 
 }

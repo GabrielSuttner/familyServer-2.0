@@ -4,22 +4,29 @@ import DAO.EventAO;
 import DAO.PersonAO;
 import DataAccess.DataAccessException;
 import DataAccess.DataBase;
-import DataGenerator.Utility;
+import HelperClass.Utility;
 import Model.Event;
 import Model.Person;
 import Response.EventsResponse;
 import Response.PersonResponse;
 import Response.PersonsResponse;
 import Response.EventResponse;
-import jdk.jshell.execution.Util;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-
+/**
+ * retrieves events and persons from the database
+ */
 public class DataService{
     Utility util = new Utility();
+
+    /**
+     * retreive one person from the database.
+     * @param personID
+     * @return
+     */
     public PersonResponse getPerson(String personID) {
         Person person = null;
         DataBase db = new DataBase();
@@ -28,47 +35,47 @@ public class DataService{
 
         try {
             person = pa.getPerson(db.getPersonConnection(), personID);
-            db.closePersonConnection(true);
+            db.closePersonConnection();
             pr.setFields(person);
         } catch (DataAccessException e) {
             pr.setSuccess(false);
             pr.setMessage(e.getMessage());
             e.printStackTrace();
             try {
-                db.closePersonConnection(false);
+                db.closePersonConnection();
             } catch (DataAccessException ex) {
                 ex.printStackTrace();
             }
         }
         return pr;
     }
+
+
+    /**
+     * retreive all people that are associated with a personID
+     * @param personID
+     * @return
+     */
     public PersonsResponse getPeople(String personID) {
         PersonsResponse response = new PersonsResponse();
-        List<Person> persons = new ArrayList<>();
-        Person person = null;
+        List<Person> persons;
         DataBase db = new DataBase();
         PersonAO pa = new PersonAO();
+
         try {
-
-            util.isRelated(pa.getPerson(db.getPersonConnection(), personID), null);
-            db.closePersonConnection(true);
-            Set<String> ids = util.getPersonIDSet();
-            ids.add(personID);
-
-            for(String s : ids){
-                person = pa.getPerson(db.getPersonConnection(), s);
-                db.closePersonConnection(true);
-                persons.add(person);
-            }
+            Person p = pa.getPerson(db.getPersonConnection(), personID);
+            persons = pa.getPersonByAssociated(db.getPersonConnection(), p.getUsername());
+            db.closePersonConnection();
 
             response.setData(persons);
             response.setSuccess(true);
+
         } catch (DataAccessException e) {
             response.setSuccess(false);
             response.setMessage(e.getMessage());
             e.printStackTrace();
             try {
-                db.closePersonConnection(false);
+                db.closePersonConnection();
             } catch (DataAccessException ex) {
                 ex.printStackTrace();
             }
@@ -76,22 +83,28 @@ public class DataService{
 
         return response;
     }
+
+    /**
+     * retreive event by ID.
+     * @param eventID
+     * @return
+     */
     public EventResponse getEvent(String eventID) {
-        Event event = null;
+        Event event;
         DataBase db = new DataBase();
         EventAO pa = new EventAO();
         EventResponse pr = new EventResponse();
 
         try {
             event = pa.getEvent(db.getEventConnection(), eventID);
-            db.closeEventConnection(true);
+            db.closeEventConnection();
             pr.setField(event);
         } catch (DataAccessException e) {
             pr.setSuccess(false);
             pr.setMessage(e.getMessage());
             e.printStackTrace();
             try {
-                db.closeEventConnection(false);
+                db.closeEventConnection();
             } catch (DataAccessException ex) {
                 ex.printStackTrace();
             }
@@ -99,6 +112,11 @@ public class DataService{
         return pr;
     }
 
+    /**
+     * get all events that have given associated userName
+     * @param personID
+     * @return
+     */
     public EventsResponse getEvents(String personID) {
         EventsResponse response = new EventsResponse();
         List<Event> events;
@@ -115,7 +133,7 @@ public class DataService{
             response.setMessage(e.getMessage());
             e.printStackTrace();
             try {
-                db.closeEventConnection(false);
+                db.closeEventConnection();
             } catch (DataAccessException ex) {
                 ex.printStackTrace();
             }

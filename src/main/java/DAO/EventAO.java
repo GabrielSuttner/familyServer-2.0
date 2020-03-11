@@ -14,7 +14,7 @@ import java.util.List;
 
 public class EventAO {
     /**
-     *
+     * Add event to Database.
      * @param connection
      * @param event
      * @throws SQLException
@@ -50,7 +50,13 @@ public class EventAO {
         }
     }
 
-    public void deletePersonByAssociatedUserName(Connection connection, String associatedUserName) throws DataAccessException {
+    /**
+     * Delete all persons in Database by associated Username.
+     * @param connection
+     * @param associatedUserName
+     * @throws DataAccessException
+     */
+    public void deleteEventByAssociatedUserName(Connection connection, String associatedUserName) throws DataAccessException {
         PreparedStatement stmt = null;
         try {
             String sql = "DELETE FROM events WHERE Username = '" + associatedUserName +"';";
@@ -72,6 +78,12 @@ public class EventAO {
         }
     }
 
+    /**
+     * Add list of events to the database
+     * @param connection
+     * @param events
+     * @throws DataAccessException
+     */
     public void addEvents(Connection connection, List<Event> events) throws DataAccessException {
         PreparedStatement stmt = null;
         try {
@@ -108,7 +120,7 @@ public class EventAO {
     }
 
     /**
-     *
+     * update a given event, updates eveny by the eventID.
      * @param connection
      * @param event
      * @throws SQLException
@@ -117,8 +129,9 @@ public class EventAO {
         PreparedStatement stmt = null;
         try{
             String sql = "UPDATE events" +
-                    "set Event_ID = ?, Username = ?, Person_ID = ?, Latitude = ?," +
-                    "Longitude = ?, Country = ?, City = ?, EventType = ?, Year = ?";
+                    " set Event_ID = ?, Username = ?, Person_ID = ?, Latitude = ?," +
+                    " Longitude = ?, Country = ?, City = ?, EventType = ?, Year = ? WHERE " +
+                    " Event_ID = '" +event.getEventID()+ "';";
 
             stmt = connection.prepareStatement(sql);
             stmt.setString(2, event.getAssociatedUsername());
@@ -144,7 +157,7 @@ public class EventAO {
     }
 
     /**
-     *
+     * Delete event by EventID
      * @param connection
      * @param eventID
      * @throws SQLException
@@ -174,7 +187,7 @@ public class EventAO {
     }
 
     /**
-     *
+     * Get list of all events.
      * @param connection
      * @return list of events
      * @throws SQLException
@@ -215,6 +228,13 @@ public class EventAO {
         return events;
     }
 
+    /**
+     * get all events that are associated with a username.
+     * @param connection
+     * @param personID
+     * @return
+     * @throws DataAccessException
+     */
     public List<Event> getUserEvents(Connection connection, String personID) throws DataAccessException {
         List<Event> events = new ArrayList<>();
         PreparedStatement stmt = null;
@@ -253,6 +273,7 @@ public class EventAO {
     }
 
     /**
+     * Get event by EventID
      * @param eventID
      * @return specified event
      */
@@ -293,6 +314,13 @@ public class EventAO {
         return newEvent;
     }
 
+    /**
+     * Get all events that are associated with a username.
+     * @param connection
+     * @param s
+     * @return
+     * @throws DataAccessException
+     */
     public List<Event> getUserEventsByUserName(Connection connection, String s) throws DataAccessException {
         List<Event> events = new ArrayList<>();
         PreparedStatement stmt = null;

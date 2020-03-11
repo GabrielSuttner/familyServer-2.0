@@ -3,6 +3,9 @@ package Model;
 public class Location {
     private String country;
     private String city;
+    private double latitude;
+    private double longitude;
+
 
     public Location(String country, String city, Double latitude, Double longitude) {
         this.country = country;
@@ -10,9 +13,6 @@ public class Location {
         this.latitude = latitude;
         this.longitude = longitude;
     }
-
-    private double latitude;
-    private double longitude;
 
     public String getCountry() {
         return country;

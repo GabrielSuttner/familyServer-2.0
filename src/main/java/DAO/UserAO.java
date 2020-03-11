@@ -8,6 +8,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserAO {
+    /**
+     * Add user to database.
+     * @param connection
+     * @param user
+     * @throws DataAccessException
+     */
     public void addUser(Connection connection, User user) throws DataAccessException {
         PreparedStatement stmt = null;
 
@@ -40,6 +46,12 @@ public class UserAO {
         }
     }
 
+    /**
+     * Add list of users to database.
+     * @param connection
+     * @param users
+     * @throws DataAccessException
+     */
     public void addUsers(Connection connection, List<User> users) throws DataAccessException {
         PreparedStatement stmt = null;
 
@@ -115,6 +127,12 @@ public class UserAO {
         return user;
     }
 
+    /**
+     * get all users from database.
+     * @param connection
+     * @return
+     * @throws DataAccessException
+     */
     public List<User> getUsers(Connection connection) throws DataAccessException {
         List<User> users = new ArrayList<>();
         PreparedStatement stmt = null;
@@ -148,19 +166,6 @@ public class UserAO {
             }
         }
         return users;
-    }
-
-    /**
-     *
-     * @throws DataAccessException
-     */
-    public void clearUsersTables(Connection connection) throws DataAccessException {
-        try (Statement stmt = connection.createStatement()){
-            String sql = "DELETE FROM users;";
-            stmt.executeUpdate(sql);
-        } catch (SQLException e) {
-            throw new DataAccessException("SQL Error encountered while clearing user tables");
-        }
     }
 
 }

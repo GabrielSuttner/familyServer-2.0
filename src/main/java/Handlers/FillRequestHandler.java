@@ -14,7 +14,7 @@ import java.net.HttpURLConnection;
 
 public class FillRequestHandler implements HttpHandler {
     @Override
-    public void handle(HttpExchange exchange) throws IOException {
+    public void handle(HttpExchange exchange){
         DataBase db = new DataBase();
         try {
             if(exchange.getRequestMethod().toUpperCase().equals("POST")) {
@@ -33,7 +33,7 @@ public class FillRequestHandler implements HttpHandler {
                     userName = userAndGeneration.substring(0, pos);
                 }
                 FillService fs = new FillService();
-                FillResponse response = null;
+                FillResponse response;
                 response = fs.fill(userName, generations);
 
                 OutputStream respBody = exchange.getResponseBody();

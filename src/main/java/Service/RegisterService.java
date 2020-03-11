@@ -14,6 +14,11 @@ import Response.RegisterResponse;
 import static Server.Server.util;
 
 public class RegisterService {
+    /**
+     * registering a new account will log you in, and generate 4 generations of ancestors for the new user.
+     * @param r
+     * @return
+     */
     public RegisterResponse register(RegisterRequest r) {
         DataBase db = new DataBase();
 
@@ -43,13 +48,13 @@ public class RegisterService {
             token = new AuthToken(r.getUserName());
 
             pa.addPerson(db.getPersonConnection(), person);
-            db.closePersonConnection(true);
+            db.closePersonConnection();
 
             ua.addUser(db.getUserConnection(), user);
-            db.closeUserConnection(true);
+            db.closeUserConnection();
 
             aa.addToken(db.getAuthConnection(), token);
-            db.closeAuthConnection(true);
+            db.closeAuthConnection();
 
             util.generateDataHelper(person, 4);
 
@@ -62,8 +67,6 @@ public class RegisterService {
             response.setSuccess(false);
             response.setMessage("error: "+ e.getMessage());
         }
-
-
 
         return response;
     }

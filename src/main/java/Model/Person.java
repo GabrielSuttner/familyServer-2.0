@@ -12,12 +12,6 @@ import java.util.UUID;
 public class Person {
     @SerializedName("personID")
     private String PersonID;
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(PersonID, associatedUsername, FirstName, LastName, Gender, FatherID, MotherID, SpouseID);
-    }
-
     @SerializedName("associatedUsername")
     private String associatedUsername= null;
     @SerializedName("firstName")
@@ -48,7 +42,6 @@ public class Person {
                 Objects.equals(MotherID, person.MotherID) &&
                 Objects.equals(SpouseID, person.SpouseID);
     }
-
 
     /**
      *
@@ -91,38 +84,20 @@ public class Person {
         this.SpouseID = spouse;
     }
 
-    /**
-     * @return
-     */
-        public String getPersonID() {
+    public String getPersonID() {
         return PersonID;
     }
 
-    /**
-     *
-     * @return
-     */
     public String getUsername() {
         return associatedUsername;
     }
 
-    /**
-     * @param username
-     */
     public void setUsername(String username) { associatedUsername = username; }
 
-    /**
-     *
-     * @return
-     */
     public String getFirstName() {
         return FirstName;
     }
 
-    /**
-     *
-     * @param firstName
-     */
     public void setFirstName(String firstName) {
         FirstName = firstName;
     }
@@ -131,18 +106,10 @@ public class Person {
         return LastName;
     }
 
-    /**
-     *
-     * @param lastName
-     */
     public void setLastName(String lastName) {
         LastName = lastName;
     }
 
-    /**
-     *
-     * @return
-     */
     public String getGender() {
         return Gender;
     }
@@ -175,4 +142,8 @@ public class Person {
         SpouseID = spouseID;
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(PersonID, associatedUsername, FirstName, LastName, Gender, FatherID, MotherID, SpouseID);
+    }
 }

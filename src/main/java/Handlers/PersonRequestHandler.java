@@ -27,8 +27,10 @@ public class PersonRequestHandler implements HttpHandler {
         try {
             if (exchange.getRequestMethod().toUpperCase().equals("GET")) {
                 Headers reqHeaders = exchange.getRequestHeaders();
+
                 String authToken = reqHeaders.get("Authorization").toString();
                 authToken = authToken.substring(1, authToken.length() - 1);
+
                 Gson gson = new Gson();
                 OutputStream respBody = exchange.getResponseBody();
 
@@ -44,12 +46,13 @@ public class PersonRequestHandler implements HttpHandler {
 
                         try {
                             User user = ua.getUser(db.getUserConnection(), userID);
-                            db.closeUserConnection(true);
+                            db.closeUserConnection();
                             personID = user.getPersonID();
+
                         } catch (DataAccessException e) {
                             e.printStackTrace();
                             try {
-                                db.closeUserConnection(true);
+                                db.closeUserConnection();
                             } catch (DataAccessException ex) {
                                 ex.printStackTrace();
                             }
@@ -112,7 +115,7 @@ public class PersonRequestHandler implements HttpHandler {
             exchange.sendResponseHeaders(HttpURLConnection.HTTP_SERVER_ERROR, 0);
             exchange.getResponseBody().close();
             try {
-                db.closeAllConnections(false);
+                db.closeAllConnections();
             } catch (DataAccessException ex) {
                 ex.printStackTrace();
             }

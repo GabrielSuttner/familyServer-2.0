@@ -35,9 +35,9 @@ public class AuthTokenDAOTest {
             pd = new AuthTokenAO();
             pd.addToken(this.db.getAuthConnection(), this.authToken);
             newAuthToken = pd.getToken(db.getAuthConnection(), this.authToken.getUserName());
-            db.closeAuthConnection(true);
+            db.closeAuthConnection();
         } catch (DataAccessException e) {
-            db.closeAuthConnection(false);
+            db.closeAuthConnection();
         }
 
         Assertions.assertEquals(newAuthToken, this.authToken);
@@ -55,10 +55,10 @@ public class AuthTokenDAOTest {
             ao = new AuthTokenAO();
             ao.addTokens(db.getAuthConnection(), tokens);
             token = ao.getToken(db.getAuthConnection(), this.diffToken.getUserName());
-            db.closeAuthConnection(true);
+            db.closeAuthConnection();
         } catch (DataAccessException e) {
             e.printStackTrace();
-            db.closeAuthConnection(false);
+            db.closeAuthConnection();
         }
         Assertions.assertEquals(token, this.diffToken);
     }
@@ -69,9 +69,9 @@ public class AuthTokenDAOTest {
         try {
             pd = new AuthTokenAO();
             pd.addToken(this.db.getAuthConnection(), this.authToken);
-            this.db.closeAuthConnection(true);
+            this.db.closeAuthConnection();
         } catch (DataAccessException e) {
-            db.closeAuthConnection(false);
+            db.closeAuthConnection();
         }
         //successfully addded a authToken
         boolean failed = false;
@@ -82,7 +82,7 @@ public class AuthTokenDAOTest {
             pd.addToken(con, this.authToken);
         } catch (DataAccessException e) {
             //error gettign the authToken because its a duplicate
-            db.closeAuthConnection(false);
+            db.closeAuthConnection();
             failed = true;
         }
 
@@ -95,9 +95,9 @@ public class AuthTokenDAOTest {
         try {
             pd = new AuthTokenAO();
             pd.addToken(this.db.getAuthConnection(), this.authToken);
-            this.db.closeAuthConnection(true);
+            this.db.closeAuthConnection();
         } catch (DataAccessException  e) {
-            db.closeAuthConnection(false);
+            db.closeAuthConnection();
         }
 
         String userID = this.authToken.getUserName();
@@ -118,20 +118,20 @@ public class AuthTokenDAOTest {
         try {
             pd = new AuthTokenAO();
             pd.addToken(this.db.getAuthConnection(), this.authToken);
-            db.closeAuthConnection(true);
+            db.closeAuthConnection();
         } catch (DataAccessException  e) {
-            db.closeAuthConnection(false);
+            db.closeAuthConnection();
         }
 
         AuthToken newAuthToken = null;
         boolean failed = false;
         try {
             pd.getToken(db.getAuthConnection(), this.diffToken.getTokenID());
-            db.closeAuthConnection(true);
+            db.closeAuthConnection();
         } catch (DataAccessException e) {
             e.printStackTrace();
             failed = true;
-            db.closeAuthConnection(false);
+            db.closeAuthConnection();
         }
         Assertions.assertTrue(failed);
     }
@@ -149,11 +149,11 @@ public class AuthTokenDAOTest {
             pa.addToken(db.getAuthConnection(), authToken);
             this.db.clearAuthTables();
             token = pa.getToken(db.getAuthConnection(), authToken.getTokenID());
-            this.db.closeAuthConnection(true);
+            this.db.closeAuthConnection();
         } catch (DataAccessException e) {
             e.printStackTrace();
             try {
-                this.db.closeAuthConnection(false);
+                this.db.closeAuthConnection();
             } catch (DataAccessException ex) {
                 ex.printStackTrace();
             }

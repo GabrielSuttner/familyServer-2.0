@@ -21,12 +21,12 @@ public class LoadRequestHandler implements HttpHandler {
     public void handle(HttpExchange exchange) throws IOException {
         try {
             if(exchange.getRequestMethod().toUpperCase().equals("POST")) {
-                List<User> users = null;
-                List<Person> persons = null;
-                List<Event> events = null;
+                List<User> users;
+                List<Person> persons;
+                List<Event> events;
                 Reader reader = new InputStreamReader(exchange.getRequestBody());
                 Gson gson = new Gson();
-                ListContainer container = null;
+                ListContainer container;
 
                 container = gson.fromJson(reader, ListContainer.class);
                 users = container.getUsers();

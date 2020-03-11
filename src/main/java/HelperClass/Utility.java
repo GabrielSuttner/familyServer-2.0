@@ -1,4 +1,4 @@
-package DataGenerator;
+package HelperClass;
 
 import DAO.AuthTokenAO;
 import DAO.EventAO;
@@ -22,8 +22,12 @@ public class Utility {
     List<Location> locations = null;
     int year = 2000;
 
+    /**
+     * Helper to get gerateData started.
+     * @param person
+     * @param generations
+     */
     public void generateDataHelper(Person person, int generations){
-
         person.setFatherID(null);
         person.setMotherID(null);
         person.setSpouseID(null);
@@ -34,6 +38,11 @@ public class Utility {
 
     }
 
+    /**
+     * generate data for a given person down x generations
+     * @param person
+     * @param generations
+     */
     private void generateData(Person person, int generations) {
         this.year = this.year - 35;
         if(generations == 0) {
@@ -49,6 +58,10 @@ public class Utility {
         return;
     }
 
+    /**
+     * Generate two parents for a given person.
+     * @param person
+     */
     private void generateParents(Person person) {
         String father = person.getFatherID();
         String mother = person.getMotherID();
@@ -75,6 +88,10 @@ public class Utility {
 
     }
 
+    /**
+     * functions to get random name data for individuals.
+     * @return
+     */
     private String getLastName(){
         int random = rand.nextInt(surNames.length);
         return surNames[random];
@@ -88,6 +105,11 @@ public class Utility {
         return femaleNames[random];
     }
 
+    /**
+     * generate birth, marriage and death for two individuals
+     * @param dad
+     * @param mom
+     */
     private void generateEvents(Person dad, Person mom) {
         Event birth = generateBirth(dad);
         addEvent(birth);
@@ -98,6 +120,11 @@ public class Utility {
         addEvent(generateDeath(mom));
     }
 
+    /**
+     * generates a birth for one person
+     * @param person
+     * @return
+     */
     private Event generateBirth(Person person) {
         int random = rand.nextInt(12);
         int year = random + this.year % 2 == 0 ? this.year + random : this.year - random;
@@ -112,6 +139,11 @@ public class Utility {
         return event;
     }
 
+    /**
+     * generates a marriage between two people
+     * @param dad
+     * @param mom
+     */
     private void generateMarriage(Person dad, Person mom) {
         int random = rand.nextInt(15);
         int year = this.year + random + 15;
@@ -127,6 +159,11 @@ public class Utility {
                 location.getCity(), "Marriage", year));
     }
 
+    /**
+     * generates a death for a given person.
+     * @param person
+     * @return
+     */
     private Event generateDeath(Person person) {
         int random = rand.nextInt(20);
         int year = random + this.year + 50;
@@ -142,32 +179,38 @@ public class Utility {
 
         return event;
     }
-
+    /**
+     * Static function to be used throughout the program
+     * @param event
+     */
     private void addEvent(Event event) {
         DataBase db = new DataBase();
         EventAO ea = new EventAO();
         try {
             ea.addEvent(db.getEventConnection(), event);
-            db.closeEventConnection(true);
+            db.closeEventConnection();
         } catch (DataAccessException e) {
             try {
-                db.closeEventConnection(false);
+                db.closeEventConnection();
             } catch (DataAccessException ex) {
                 ex.printStackTrace();
             }
             e.printStackTrace();
         }
     }
-
+    /**
+     * Static function to be used throughout the program
+     * @param person
+     */
     private void addPerson(Person person) {
         DataBase db = new DataBase();
         PersonAO ea = new PersonAO();
         try {
             ea.addPerson(db.getPersonConnection(), person);
-            db.closePersonConnection(true);
+            db.closePersonConnection();
         } catch (DataAccessException e) {
             try {
-                db.closePersonConnection(false);
+                db.closePersonConnection();
             } catch (DataAccessException ex) {
                 ex.printStackTrace();
             }
@@ -175,15 +218,19 @@ public class Utility {
         }
     }
 
+    /**
+     * Static function to be used throughout the program
+     * @param person
+     */
     private void updatePerson(Person person) {
         DataBase db = new DataBase();
         PersonAO ea = new PersonAO();
         try {
             ea.updatePerson(db.getPersonConnection(), person);
-            db.closePersonConnection(true);
+            db.closePersonConnection();
         } catch (DataAccessException e) {
             try {
-                db.closePersonConnection(false);
+                db.closePersonConnection();
             } catch (DataAccessException ex) {
                 ex.printStackTrace();
             }
@@ -202,14 +249,14 @@ public class Utility {
         AuthTokenAO ao = new AuthTokenAO();
         try {
             AuthToken at = ao.getTokenByAuthToken(db.getAuthConnection(), authToken);
-            db.closeAuthConnection(true);
+            db.closeAuthConnection();
             if (!at.equals(null)) {
                 userID = at.getUserName();
             }
         } catch (DataAccessException e) {
             e.printStackTrace();
             try {
-                db.closeAuthConnection(false);
+                db.closeAuthConnection();
             } catch (DataAccessException ex) {
                 ex.printStackTrace();
             }
@@ -225,7 +272,12 @@ public class Utility {
     static boolean found = false;
     static Set<String> visited = new TreeSet<>();
 
-
+    /**
+     * used as a wrapper for the isRelated function
+     * @param personID
+     * @param authToken
+     * @return
+     */
     public static boolean isRelatedHelper(String personID, String authToken) {
         visited.clear();
         found = false;
@@ -249,6 +301,11 @@ public class Utility {
         return found;
     }
 
+    /**
+     * checks to see if Person is related to the requested person.
+     * @param person
+     * @param requestedPersonID
+     */
     public static void isRelated(Person person, String requestedPersonID) {
         if(requestedPersonID == null) {
             requestedPersonID = "temp";
@@ -309,10 +366,10 @@ public class Utility {
         Person person = null;
         try {
             person = pa.getPerson(db.getPersonConnection(), id);
-            db.closePersonConnection(true);
+            db.closePersonConnection();
         } catch (DataAccessException e) {
             try {
-                db.closePersonConnection(false);
+                db.closePersonConnection();
             } catch (DataAccessException ex) {
                 ex.printStackTrace();
             }
@@ -333,10 +390,10 @@ public class Utility {
         User user = null;
         try {
             user = pa.getUser(db.getUserConnection(), username);
-            db.closeUserConnection(true);
+            db.closeUserConnection();
         } catch (DataAccessException e) {
             try {
-                db.closeUserConnection(false);
+                db.closeUserConnection();
             } catch (DataAccessException ex) {
                 ex.printStackTrace();
             }
@@ -346,6 +403,12 @@ public class Utility {
         return user;
     }
 
+    /**
+     * checks first parameter to see if associated with second parameter.
+     * @param relativePersonID
+     * @param associatedUsername
+     * @return
+     */
     public static boolean isAssociated(String relativePersonID, String associatedUsername) {
         Person p = getPerson(relativePersonID);
         if(p.getUsername().equals(associatedUsername)) return true;
@@ -362,23 +425,18 @@ public class Utility {
         AuthTokenAO ao = new AuthTokenAO();
         try {
             AuthToken at = ao.getTokenByAuthToken(db.getAuthConnection(), token);
-            db.closeAuthConnection(true);
+            db.closeAuthConnection();
             if (at == null) {
                 return false;
             }
             return true;
         } catch (DataAccessException e) {
             try {
-                db.closeAuthConnection(false);
+                db.closeAuthConnection();
             } catch (DataAccessException ex) {
                 ex.printStackTrace();
             }
             return false;
         }
-    }
-
-
-    public static Set<String> getPersonIDSet() {
-        return visited;
     }
 }

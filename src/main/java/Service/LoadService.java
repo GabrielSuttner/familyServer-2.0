@@ -17,7 +17,7 @@ public class LoadService {
     DataBase db = new DataBase();
 
     /**
-     *
+     * Load given data into database.
      * @param request
      * @return
      */
@@ -35,13 +35,13 @@ public class LoadService {
             db.clearTables();
 
             ua.addUsers(db.getUserConnection(), users);
-            db.closeUserConnection(true);
+            db.closeUserConnection();
 
             ea.addEvents(db.getEventConnection(), events);
-            db.closeEventConnection(true);
+            db.closeEventConnection();
 
             pa.addPersons(db.getPersonConnection(), persons);
-            db.closePersonConnection(true);
+            db.closePersonConnection();
 
 
             response.setMessage("Successfully added " + users.size() +" users, "+ persons.size()+" persons, " +
@@ -52,7 +52,7 @@ public class LoadService {
             e.printStackTrace();
             response.setMessage(e.getMessage());
             try {
-                db.closeAllConnections(false);
+                db.closeAllConnections();
             } catch (DataAccessException ex) {
                 ex.printStackTrace();
             }

@@ -19,7 +19,6 @@ public class ClearRequestHandler implements HttpHandler {
                 OutputStream respBody = exchange.getResponseBody();
                 OutputStreamWriter osw = new OutputStreamWriter(respBody);
 
-
                 ClearService cl = new ClearService();
                 ClearResponse response = cl.clear();
                 osw.write(gson.toJson(response));
@@ -29,11 +28,13 @@ public class ClearRequestHandler implements HttpHandler {
                 } else {
                     exchange.sendResponseHeaders(HttpURLConnection.HTTP_NOT_FOUND, 0);
                 }
+
                 osw.close();
                 exchange.close();
             } else {
                 exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_METHOD, 0);
             }
+
         } catch (IOException e) {
             System.out.println("Error: Couldn't establish connection to userDatabase.");
         }

@@ -6,8 +6,8 @@ import java.util.Objects;
 
 public class User {
 
-    private String userName= null;
-    private String password= null;
+    private String userName = null;
+    private String password = null;
     private String email= null;
     private String firstName= null;
     private String lastName= null;
@@ -26,13 +26,6 @@ public class User {
     public User(String userName, String password) {
         this.userName = userName;
         this.password = password;
-    }
-    public boolean checkPassword(String password) {
-        if(this.password.equals(password) ){
-            return true;
-        } else {
-            return false;
-        }
     }
 
     public String getEmail() {

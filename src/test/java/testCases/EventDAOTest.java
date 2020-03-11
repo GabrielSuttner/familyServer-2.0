@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import javax.xml.crypto.Data;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,9 +36,9 @@ public class EventDAOTest {
             pd = new EventAO();
             pd.addEvent(this.db.getEventConnection(), this.event);
             newEvent = pd.getEvent(db.getEventConnection(), this.event.getEventID());
-            db.closeEventConnection(true);
+            db.closeEventConnection();
         } catch (DataAccessException e) {
-            db.closeEventConnection(false);
+            db.closeEventConnection();
         }
 
         Assertions.assertEquals(newEvent, this.event);
@@ -54,9 +53,9 @@ public class EventDAOTest {
             pd.addEvent(this.db.getEventConnection(), this.event);
             pd.addEvent(this.db.getEventConnection(), this.diffEvent);
             events = pd.getEvents(db.getEventConnection());
-            db.closeEventConnection(true);
+            db.closeEventConnection();
         } catch (DataAccessException e) {
-            db.closeEventConnection(false);
+            db.closeEventConnection();
         }
 
         Assertions.assertEquals(events.size(), 2);
@@ -73,9 +72,9 @@ public class EventDAOTest {
             ea = new EventAO();
             ea.addEvents(db.getEventConnection(), events);
             eventCheck = ea.getEvents(db.getEventConnection());
-            db.closeEventConnection(true);
+            db.closeEventConnection();
         } catch (DataAccessException e) {
-            db.closeEventConnection(false);
+            db.closeEventConnection();
             e.printStackTrace();
         }
         Assertions.assertEquals(events, eventCheck);
@@ -88,9 +87,9 @@ public class EventDAOTest {
         try {
             pd = new EventAO();
             pd.addEvent(this.db.getEventConnection(), this.event);
-            this.db.closeEventConnection(true);
+            this.db.closeEventConnection();
         } catch (DataAccessException e) {
-            db.closeEventConnection(false);
+            db.closeEventConnection();
         }
         //successfully addded a event
         boolean failed = false;
@@ -101,7 +100,7 @@ public class EventDAOTest {
             pd.addEvent(con, this.event);
         } catch (DataAccessException e) {
             //error gettign the event because its a duplicate
-            db.closeEventConnection(false);
+            db.closeEventConnection();
             failed = true;
         }
 
@@ -114,9 +113,9 @@ public class EventDAOTest {
         try {
             pd = new EventAO();
             pd.addEvent(this.db.getEventConnection(), this.event);
-            this.db.closeEventConnection(true);
+            this.db.closeEventConnection();
         } catch (DataAccessException  e) {
-            db.closeEventConnection(false);
+            db.closeEventConnection();
         }
 
         String eventID = this.event.getEventID();
@@ -137,20 +136,20 @@ public class EventDAOTest {
         try {
             pd = new EventAO();
             pd.addEvent(this.db.getEventConnection(), this.event);
-            db.closeEventConnection(true);
+            db.closeEventConnection();
         } catch (DataAccessException  e) {
-            db.closeEventConnection(false);
+            db.closeEventConnection();
         }
 
         Event newEvent = null;
         boolean failed = false;
         try {
             pd.getEvent(db.getEventConnection(), this.diffEvent.getEventID());
-            db.closeEventConnection(true);
+            db.closeEventConnection();
         } catch (DataAccessException e) {
             e.printStackTrace();
             failed = true;
-            db.closeEventConnection(false);
+            db.closeEventConnection();
         }
         Assertions.assertTrue(failed);
     }
@@ -168,11 +167,11 @@ public class EventDAOTest {
             pa.addEvent(db.getEventConnection(), event);
             this.db.clearEventsTables();
             token = pa.getEvent(db.getEventConnection(), event.getEventID());
-            this.db.closeEventConnection(true);
+            this.db.closeEventConnection();
         } catch (DataAccessException e) {
             e.printStackTrace();
             try {
-                this.db.closeEventConnection(false);
+                this.db.closeEventConnection();
             } catch (DataAccessException ex) {
                 ex.printStackTrace();
             }

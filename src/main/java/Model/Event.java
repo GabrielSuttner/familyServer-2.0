@@ -61,7 +61,6 @@ public class Event {
         return Objects.hash(EventID, AssociatedUsername, PersonID, Latitude, Longitude, Country, City, EventType, Year);
     }
 
-
     /**
      *
      * @param associatedUsername
@@ -164,10 +163,6 @@ public class Event {
 
     public String getEventType() {
         return EventType;
-    }
-
-    public void setEventType(String eventType) {
-        EventType = eventType;
     }
 
     public int getYear() {

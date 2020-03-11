@@ -11,7 +11,7 @@ import java.util.List;
 
 public class AuthTokenAO {
     /**
-     *
+     *Returns AuthToken that cooresponds to a given userID.
      * @param connection
      * @param userID
      * @return AuthToken
@@ -46,7 +46,7 @@ public class AuthTokenAO {
     }
 
     /**
-     *
+     * Returns AuthToken from the authorizationID.
      * @param connection
      * @param authToken
      * @return AuthToken
@@ -75,7 +75,7 @@ public class AuthTokenAO {
     }
 
         /**
-     *
+     * Add Token to Token table
      * @param connection
      * @param token
      * @throws DataAccessException
@@ -110,6 +110,13 @@ public class AuthTokenAO {
             }
         }
     }
+
+    /**
+     * add List<AuthToken> to database.
+     * @param authConnection
+     * @param tokens
+     * @throws DataAccessException
+     */
     public void addTokens(Connection authConnection, List<AuthToken> tokens) throws DataAccessException {
         PreparedStatement stmt = null;
 
@@ -143,7 +150,7 @@ public class AuthTokenAO {
     }
 
     /**
-     *
+     * Delete all tokens for a given username.
      * @param connection
      * @param userName
      * @throws DataAccessException

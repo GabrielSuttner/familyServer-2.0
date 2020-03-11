@@ -40,14 +40,14 @@ public class UserDAOTest {
             pd = new UserAO();
             pd.addUser(con, this.User);
         } catch (DataAccessException e) {
-            db.closeUserConnection(false);
+            db.closeUserConnection();
         }
         List<User> people = pd.getUsers(db.getUserConnection());
         User compare = null;
         for(User p : people) {
             compare = p;
         }
-        db.closeUserConnection(false);
+        db.closeUserConnection();
         Assertions.assertEquals(1, people.size());
     }
 
@@ -62,10 +62,10 @@ public class UserDAOTest {
             ua = new UserAO();
             ua.addUsers(this.db.getUserConnection(), users);
             userList = ua.getUsers(this.db.getUserConnection());
-            db.closeUserConnection(true);
+            db.closeUserConnection();
         } catch (DataAccessException e) {
             e.printStackTrace();
-            db.closeUserConnection(false);
+            db.closeUserConnection();
         }
         Assertions.assertEquals(users, userList);
     }
@@ -79,9 +79,9 @@ public class UserDAOTest {
             pd = new UserAO();
             pd.addUser(con, this.User);
             pd.addUser(con, this.User);
-            db.closeUserConnection(true);
+            db.closeUserConnection();
         } catch (DataAccessException e) {
-            db.closeUserConnection(false);
+            db.closeUserConnection();
             e.printStackTrace();
             failed = true;
         }
@@ -98,10 +98,10 @@ public class UserDAOTest {
             pd = new UserAO();
             pd.addUser(this.db.getUserConnection(), this.User);
             s = pd.getUser(this.db.getUserConnection(), this.User.getUserName());
-            this.db.closeUserConnection(true);
+            this.db.closeUserConnection();
         } catch (DataAccessException e) {
             e.printStackTrace();
-            db.closeUserConnection(false);
+            db.closeUserConnection();
         }
         Assertions.assertEquals(s, User);
     }
@@ -114,7 +114,7 @@ public class UserDAOTest {
             pd = new UserAO();
             pd.addUser(con, this.User);
         } catch (DataAccessException  e) {
-            db.closeUserConnection(false);
+            db.closeUserConnection();
         }
         String personID = this.User.getUserName();
         User newPerson = null;
@@ -126,7 +126,7 @@ public class UserDAOTest {
             e.printStackTrace();
             failed = true;
         } finally {
-            db.closeUserConnection(false);
+            db.closeUserConnection();
         }
         Assertions.assertTrue(failed);
     }
@@ -141,9 +141,9 @@ public class UserDAOTest {
             Connection con = db.getUserConnection();
             pa.addUser(con, User);
             pa.addUser(con, diffUser);
-            pa.clearUsersTables(con);
+            db.clearUserTables();
             List<User> people = pa.getUsers(db.getUserConnection());
-            this.db.closeUserConnection(false);
+            this.db.closeUserConnection();
 
             Assertions.assertTrue(people.size() == 0);
 

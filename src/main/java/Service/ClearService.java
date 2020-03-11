@@ -5,6 +5,10 @@ import DataAccess.DataBase;
 import Response.ClearResponse;
 
 public class ClearService {
+    /**
+     * clear all of the databases.
+     * @return
+     */
     public ClearResponse clear() {
         ClearResponse response = new ClearResponse();
         DataBase db = new DataBase();
